@@ -32,8 +32,8 @@ const UserProfiles = () => {
 
 }
 
-//const websiteURL = "http://localhost:8080/"
-const websiteURL = "http://3.99.30.184:8080/"
+const websiteURL = "http://localhost:3000/"
+//const websiteURL = "http://3.99.30.184:8080/"
 const s3URL = "https://effiam-bucket.s3.ca-central-1.amazonaws.com/audio/"
 
 class App extends Component {
@@ -47,7 +47,9 @@ class App extends Component {
 
     this.updateInputValue = this.updateInputValue.bind(this);
     this.handleClick = this.handleClick.bind(this)
-    this.handleClick2 = this.handleClick2.bind(this)
+    this.processText = this.processText.bind(this)
+    this.processTextPreset1 = this.processTextPreset1.bind(this)
+    this.processTextPreset2 = this.processTextPreset2.bind(this)
   }
 
   handleClick () {
@@ -57,17 +59,17 @@ class App extends Component {
       { audioID: uuidv4(), audioLink: 'this is a test' }
     ;
 
-    axios.get('http://localhost:8080/api/v1/audio-profile/test')
+    axios.get(websiteURL + 'api/v1/audio-profile/test')
     .then(
       res => { console.log(res.data)
     });
   }
 
-  handleClick2 () {
+  processText () {
     
     console.log("Processing text: " + this.state.inputValue)
 
-    axios.post(websiteURL + 'api/v1/audio-profile/test3', { 
+    axios.post(websiteURL + 'api/v1/audio-profile/processtext', { 
       textID: uuidv4(), textData: this.state.inputValue })
     .then( res => { 
       //console.log(res.data.audioLink)
@@ -76,9 +78,36 @@ class App extends Component {
       this.audio.load()
       this.playAudio()
     });
+  }
 
-    
+  processTextPreset1() {
 
+    console.log("Processing text: " + this.state.inputValue)
+
+    axios.post(websiteURL + 'api/v1/audio-profile/processTextPreset1', { 
+      textID: uuidv4(), textData: this.state.inputValue })
+    .then( res => { 
+      //console.log(res.data.audioLink)
+      console.log("playing audio file: " + s3URL + res.data.audioLink)
+      this.audio = new Audio(s3URL + res.data.audioLink)
+      this.audio.load()
+      this.playAudio()
+    });
+  }
+
+  processTextPreset2() {
+
+    console.log("Processing text: " + this.state.inputValue)
+
+    axios.post(websiteURL + 'api/v1/audio-profile/processTextPreset2', { 
+      textID: uuidv4(), textData: this.state.inputValue })
+    .then( res => { 
+      //console.log(res.data.audioLink)
+      console.log("playing audio file: " + s3URL + res.data.audioLink)
+      this.audio = new Audio(s3URL + res.data.audioLink)
+      this.audio.load()
+      this.playAudio()
+    });
   }
 
   playAudio() {
@@ -112,21 +141,45 @@ class App extends Component {
           
         
         <div class='main-container'>
+
           <textarea id='userTextArea' value={this.state.inputValue} onChange={evt => this.updateInputValue(evt)}/>
+          
           <Button 
             variant="contained" 
             color="primary" 
             className='button' 
-            onClick={this.handleClick2}
+            onClick={this.processText}
           >
             Play
           </Button>
+
+          <Button 
+            variant="contained" 
+            color="secondary" 
+            className='button' 
+            onClick={this.processTextPreset1}
+          >
+            Preset 1 (LEN=3 -> KOTO)
+          </Button>
+
+          <Button 
+            variant="contained" 
+            color="secondary" 
+            className='button' 
+            onClick={this.processTextPreset2}
+          >
+            Preset 2 (NOUN -> BIRD TWEET)
+          </Button>
+
+         
+          
 
         </div>
 
       </div>
     )
   }
+
 }
 
 export default App;
