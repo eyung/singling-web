@@ -36,8 +36,8 @@ const UserProfiles = () => {
 
 }
 
-const websiteURL = "http://localhost:3000/"
-//const websiteURL = "http://3.99.30.184:8080/"
+//const websiteURL = "http://localhost:3000/"
+const websiteURL = "http://3.99.30.184:8080/"
 const s3URL = "https://effiam-bucket.s3.ca-central-1.amazonaws.com/audio/"
 
 const Player = new MIDI.Player();
@@ -220,7 +220,7 @@ class App extends Component {
       <div className='app'>
 
         <div class='top-bar'>
-          <h1>Singling Test Build</h1>
+          <h1>Test Build</h1>
         </div>
           
         
@@ -275,7 +275,7 @@ class App extends Component {
 
           <Button 
             variant="contained" 
-            color="primary" 
+            color="" 
             className='button' 
             onClick={this.processTextTransform1}
           >
