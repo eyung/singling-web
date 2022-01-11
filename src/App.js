@@ -220,7 +220,7 @@ class App extends Component {
       <div className='app'>
 
         <div class='top-bar'>
-          <h1>Test Build</h1>
+          <h1>Build</h1>
         </div>
           
         
