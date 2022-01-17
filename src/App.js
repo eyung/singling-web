@@ -2,13 +2,15 @@ import React, {Component, useState, useEffect} from "react";
 import { ThemeProvider, createMuiTheme, makeStyles } from '@material-ui/core/styles';
 import { TextField } from "@mui/material";
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
 import Icon from '@material-ui/core/Icon';
+import { IconButton } from "@mui/material";
+import AnimationIcon from '@mui/icons-material/Animation';
+import { PlayArrowOutlined, PlayArrowRounded, StayCurrentLandscapeOutlined } from "@material-ui/icons";
 import { LoadingButton } from "@mui/lab";
+import Stack from "@mui/material/Stack";
 import './App.css';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
-import { PlayArrowOutlined, PlayArrowRounded, StayCurrentLandscapeOutlined } from "@material-ui/icons";
 import * as MIDI from 'midicube';
 
 window.MIDI = MIDI; // Register to global first
@@ -55,6 +57,29 @@ const Player = new MIDI.Player()
 //  const [userText, setUserText] = React.useState([{ text: '' }]);
 //}
 
+var mydata = {
+  instructions: [
+    {
+      mod: 'WORDTYPE',
+      modValue: '11',
+      soundMod: 'INSTRUMENT',
+      soundModValue: 'KOTO',
+      modOperator: 'EQUALTO',
+      changeMode: 'SET',
+      sentimentType: 'POSITIVESENTIMENT'
+    },
+    {
+      mod: 'WORDLENGTH',
+      modValue: '5',
+      soundMod: 'INSTRUMENT',
+      soundModValue: 'GUNSHOT',
+      modOperator: 'EQUALTO',
+      changeMode: 'SET',
+      sentimentType: 'POSITIVESENTIMENT'
+    }
+  ]
+}
+
 class App extends Component {
 
   constructor () {
@@ -62,7 +87,8 @@ class App extends Component {
 
     this.state = {
       inputValue: '',
-      loading: false
+      loading: false,
+      preset: 0,
     };
 
     this.updateInputValue = this.updateInputValue.bind(this);
@@ -74,11 +100,7 @@ class App extends Component {
     this.handleClick = this.handleClick.bind(this)
     this.testjsonGET = this.testjsonGET.bind(this)
     this.testjsonPOST = this.testjsonPOST.bind(this)
-
-    this.processTextTransform1 = this.processTextTransform1.bind(this)
   }
-
-  
 
   handleClick () {
     console.log('Success!')
@@ -99,10 +121,19 @@ class App extends Component {
 
     //LoadingButtonsTransition.setLoading(true);
     //this.setLoading(true);
-    this.setState({ loading: true })
+    //this.setState({ loading: true })
 
-    axios.post(websiteURL + 'api/v1/audio-profile/processtext', { 
-      textID: uuidv4(), textData: this.state.inputValue })
+    axios.post(websiteURL + 'api/v1/audio-profile/processtext', 
+      { 
+        textID: uuidv4(), textData: this.state.inputValue
+      }, 
+      {
+        onUploadProgress : (progressEvent) => {
+          let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          console.log(progressEvent.lengthComputable)
+          console.log(percentCompleted);
+       }
+    })
     .then( res => { 
       //console.log(res.data.audioLink)
       console.log("playing audio file: " + s3URL + res.data.audioLink)
@@ -114,6 +145,10 @@ class App extends Component {
 
   processTextPreset1() {
 
+    console.log("Preset: " + this.state.preset);
+    this.setState(prevState => {
+      return {preset: prevState.preset + 1}
+    })
     console.log("Processing text: " + this.state.inputValue)
 
     axios.post(websiteURL + 'api/v1/audio-profile/processTextPreset1', { 
@@ -174,9 +209,35 @@ class App extends Component {
   testjsonGET () {
     console.log('Retrieving test json payload...')
 
-    axios.get(websiteURL + 'api/v1/audio-profile/testjsonGET')
+    axios.get(websiteURL + 'api/v1/audio-profile/testjsonGET', {
+      onDownloadProgress: progressEvent => {
+        let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        console.log(progressEvent.lengthComputable)
+        console.log(percentCompleted);
+      }
+    })
     .then(
       res => { console.log(res.data)
+
+      var newdata = {
+            mod: 'LGC',
+            modValue: '3',
+            soundMod: 'OCTAVE',
+            soundModValue: '8',
+            modOperator: 'EQUALTO',
+            changeMode: 'SET',
+            sentimentType: 'POSITIVESENTIMENT'
+      }
+      
+      const mergedata = {
+        instructions: [
+          ...mydata.instructions,
+          newdata
+        ]
+      }
+
+      console.log(mergedata)
+      console.log(JSON.stringify(mergedata))
     });
   }
 
@@ -215,10 +276,6 @@ class App extends Component {
     });
   }
 
-  processTextTransform1 () {
-   
-  }
-
   playAudio() {
     const audioPromise = this.audio.play()
     if (audioPromise !== undefined) {
@@ -250,74 +307,76 @@ class App extends Component {
         <div className='main-container'>
 
           <TextField
-            id="userTextArea"
-            multiline
-            rows={4}
-            value={this.state.inputValue}
-            onChange={evt => this.updateInputValue(evt)}
+              id="userTextArea"
+              variant="outlined"
+              multiline
+              rows={4}
+              value={this.state.inputValue}
+              onChange={evt => this.updateInputValue(evt)}
           />
+
+          <Stack 
+            id="btnStack"
+            spacing={1} 
+            direction="row"
+            justifyContent="center"
+            alignItems="center"
+          >
+
+            <LoadingButton 
+              size="small"
+              color="primary" 
+              className='button' 
+              startIcon={<PlayArrowOutlined/>}
+              loading={this.loading}
+              onClick={this.processText}
+            >
+              Fetch
+            </LoadingButton>
+
+            <Button 
+              size="small"
+              color="secondary" 
+              className='button' 
+              startIcon={<AnimationIcon/>}
+              onClick={this.processTextPreset1}
+              aria-label="Preset 1 (LEN=3 -> KOTO)"
+            >
+              Preset
+            </Button>
+
+            <Button 
+              size="small"
+              color="secondary" 
+              className='button' 
+              onClick={this.processTextPreset2}
+            >
+              Phantom
+            </Button>
+
+            <Button 
+              size="small"
+              color="default" 
+              className='button' 
+              disableElevation
+              onClick={this.testjsonGET}
+            >
+              retrieve json
+            </Button>
+            
+            <Button 
+              size="small"
+              color="default" 
+              className='button' 
+              disableElevation
+              onClick={this.testjsonPOST}
+            >
+              send json
+            </Button>
+
+          </Stack>
           
-          <LoadingButton 
-            variant="contained"
-            size="small"
-            color="primary" 
-            className='button' 
-            //startIcon={<PlayArrowOutlined/>}
-            loading={this.loading}
-            onClick={this.processText}
-          >
-            Fetch
-          </LoadingButton>
-
-          <Button 
-            size="small"
-            color="secondary" 
-            className='button' 
-            onClick={this.processTextPreset1}
-          >
-            Preset 1 (LEN=3 -> KOTO)
-          </Button>
-
-          <Button 
-            size="small"
-            color="secondary" 
-            className='button' 
-            onClick={this.processTextPreset2}
-          >
-            Phantom
-          </Button>
-
-          <Button 
-            size="small"
-            color="default" 
-            className='button' 
-            disableElevation
-            onClick={this.testjsonGET}
-          >
-            retrieve json
-          </Button>
           
-          <Button 
-            size="small"
-            color="default" 
-            className='button' 
-            disableElevation
-            onClick={this.testjsonPOST}
-          >
-            send json
-          </Button>
-
-          <Button 
-            size="small"
-            color="default" 
-            className='button' 
-            disableElevation
-            onClick={this.processTextTransform1}
-            disabled
-          >
-            Play with Transformation
-          </Button>
-
         </div>
 
 
