@@ -301,7 +301,7 @@ class App extends Component {
       <div className='app'>
 
         <div className='top-bar'>
-          <h1>Build</h1>
+          <h1>Build 1</h1>
         </div>
           
         <div className='main-container'>
@@ -331,7 +331,7 @@ class App extends Component {
               loading={this.loading}
               onClick={this.processText}
             >
-              Fetch
+              Play
             </LoadingButton>
 
             <Button 
