@@ -56,28 +56,45 @@ const Player = new MIDI.Player()
 //  const [userText, setUserText] = React.useState([{ text: '' }]);
 //}
 
-var mydata = {
-  instructions: [
-    {
-      mod: 'WORDTYPE',
-      modValue: '11',
-      soundMod: 'INSTRUMENT',
-      soundModValue: 'KOTO',
-      modOperator: 'EQUALTO',
-      changeMode: 'SET',
-      sentimentType: 'POSITIVESENTIMENT'
-    },
-    {
-      mod: 'WORDLENGTH',
-      modValue: '5',
-      soundMod: 'INSTRUMENT',
-      soundModValue: 'GUNSHOT',
-      modOperator: 'EQUALTO',
-      changeMode: 'SET',
-      sentimentType: 'POSITIVESENTIMENT'
-    }
-  ]
+//var mydata = {
+//  instructions: [
+var mydata = 
+{
+  instructions: {
+    mod: 'WORDTYPE',
+    modValue: '11',
+    soundMod: 'INSTRUMENT',
+    soundModValue: 'KOTO',
+    modOperator: 'EQUALTO',
+    changeMode: 'SET',
+    sentimentType: 'POSITIVESENTIMENT'
+  }
 }
+
+var mydata2 =
+{
+  instructions: {
+    mod: 'WORDLENGTH',
+    modValue: '5',
+    soundMod: 'INSTRUMENT',
+    soundModValue: 'GUNSHOT',
+    modOperator: 'EQUALTO',
+    changeMode: 'SET',
+    sentimentType: 'POSITIVESENTIMENT'
+  }
+}
+
+var mydata3 = {
+      mod: 'LGC',
+      modValue: '3',
+      soundMod: 'OCTAVE',
+      soundModValue: '8',
+      modOperator: 'EQUALTO',
+      changeMode: 'SET',
+      sentimentType: 'POSITIVESENTIMENT'
+}
+//  ]
+//}
 
 class App extends Component {
 
@@ -86,7 +103,7 @@ class App extends Component {
 
     // Set states
     this.state = {
-      inputValue: '',
+      inputValue: 'the quick brown fox jumped over the lazy dog',
       loading: false,
       preset: 0,
       progress: 0
@@ -104,7 +121,7 @@ class App extends Component {
     this.processTextPreset2 = this.processTextPreset2.bind(this)
     this.handleClick = this.handleClick.bind(this)
     this.testjsonGET = this.testjsonGET.bind(this)
-    this.testjsonPOST = this.testjsonPOST.bind(this)
+    //this.testjsonPOST = this.testjsonPOST.bind(this)
   }
 
   handleClick () {
@@ -132,18 +149,26 @@ class App extends Component {
     
     this.loadingBarRef.current.continuousStart()
 
-    axios.post(websiteURL + 'api/v1/audio-profile/processtext', 
-      { 
-        textID: uuidv4(), textData: this.state.inputValue
-      }, 
-      {
-        onUploadProgress : (progressEvent) => {
-          var percentCompleted = Math.round( (progressEvent.loaded * 100) / progressEvent.total );
-          console.log(progressEvent.lengthComputable)
-          console.log(percentCompleted);
-          //this.setState({progress:30})
-       }
+    //test
+    const mergedata = {
+      //instructions: [
+        ...mydata.instructions,
+        ...mydata2.instructions
+        //mydata3
+      //]
+    }
+
+    //axios.post(websiteURL + 'api/v1/audio-profile/processtext', 
+    axios.post(websiteURL + 'api/v1/audio-profile/testjsonPOST', {
+      textID: uuidv4(), 
+      textData: this.state.inputValue,
+      instructions: [
+        //mydata2
+        //mydata.instructions
+        mergedata
+      ]
     })
+
     .then( res => { 
       console.log("playing audio file: " + s3URL + res.data.audioLink)
 
@@ -165,16 +190,6 @@ class App extends Component {
       return {preset: prevState.preset + 1}
     })
     console.log("Processing text: " + this.state.inputValue)
-
-    axios.post(websiteURL + 'api/v1/audio-profile/processTextPreset1', { 
-      textID: uuidv4(), textData: this.state.inputValue })
-    .then( res => { 
-      //console.log(res.data.audioLink)
-      console.log("playing audio file: " + s3URL + res.data.audioLink)
-      this.audio = new Audio(s3URL + res.data.audioLink)
-      this.audio.load()
-      this.playAudio()
-    });
   }
 
   processTextPreset2() {
@@ -253,41 +268,6 @@ class App extends Component {
 
       console.log(mergedata)
       console.log(JSON.stringify(mergedata))
-    });
-  }
-
-  testjsonPOST () {
-    console.log('Sending test json...')
-
-    axios.post(websiteURL + 'api/v1/audio-profile/testjsonPOST', {
-      textID: uuidv4(), 
-      textData: this.state.inputValue,
-      instructions: [
-      {
-        mod: 'WORDTYPE',
-        modValue: '11',
-        soundMod: 'INSTRUMENT',
-        soundModValue: 'KOTO',
-        modOperator: 'EQUALTO',
-        changeMode: 'SET',
-        sentimentType: 'POSITIVESENTIMENT'
-      },
-      {
-        mod: 'WORDLENGTH',
-        modValue: '5',
-        soundMod: 'INSTRUMENT',
-        soundModValue: 'GUNSHOT',
-        modOperator: 'EQUALTO',
-        changeMode: 'SET',
-        sentimentType: 'POSITIVESENTIMENT'
-      }
-    ]
-    })
-    .then( res => {
-      console.log("playing audio file: " + s3URL + res.data.audioLink)
-      this.audio = new Audio(s3URL + res.data.audioLink)
-      this.audio.load()
-      this.playAudio()
     });
   }
 
@@ -382,16 +362,6 @@ class App extends Component {
               onClick={this.testjsonGET}
             >
               retrieve json
-            </Button>
-            
-            <Button 
-              size="small"
-              color="default" 
-              className='button' 
-              disableElevation
-              onClick={this.testjsonPOST}
-            >
-              send json
             </Button>
 
           </Stack>
