@@ -1,12 +1,10 @@
 import React, {Component, useState, useEffect, useRef} from "react";
-import { ThemeProvider, createMuiTheme, makeStyles } from '@material-ui/core/styles';
 import { TextField } from "@mui/material";
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
 import { IconButton } from "@mui/material";
 import AnimationIcon from '@mui/icons-material/Animation';
 import { PlayArrowOutlined, PlayArrowRounded, StayCurrentLandscapeOutlined } from "@material-ui/icons";
-import { LoadingButton } from "@mui/lab";
 import Stack from "@mui/material/Stack";
 import './App.css';
 import axios from 'axios';
@@ -86,6 +84,7 @@ class App extends Component {
   constructor () {
     super()
 
+    // Set states
     this.state = {
       inputValue: '',
       loading: false,
@@ -93,14 +92,16 @@ class App extends Component {
       progress: 0
     };
 
+    // Loading bar
     this.loadingBarRef = React.createRef()
 
+    // TextArea value
     this.updateInputValue = this.updateInputValue.bind(this)
     
+    // Buttons
     this.processText = this.processText.bind(this)
     this.processTextPreset1 = this.processTextPreset1.bind(this)
     this.processTextPreset2 = this.processTextPreset2.bind(this)
-
     this.handleClick = this.handleClick.bind(this)
     this.testjsonGET = this.testjsonGET.bind(this)
     this.testjsonPOST = this.testjsonPOST.bind(this)
@@ -119,15 +120,16 @@ class App extends Component {
     });
   }
 
+  /*
+  Main function
+  */
   processText () {
     
     console.log("Processing text: " + this.state.inputValue)
 
-    //LoadingButtonsTransition.setLoading(true);
-    //this.setLoading(true);
-    //this.setState({ loading: true })
     //this.setState({progress:10})
-
+    this.setState({ loading: true })
+    
     this.loadingBarRef.current.continuousStart()
 
     axios.post(websiteURL + 'api/v1/audio-profile/processtext', 
@@ -143,7 +145,6 @@ class App extends Component {
        }
     })
     .then( res => { 
-      //console.log(res.data.audioLink)
       console.log("playing audio file: " + s3URL + res.data.audioLink)
 
       //this.setState({progress:80})
@@ -152,6 +153,8 @@ class App extends Component {
       this.audio = new Audio(s3URL + res.data.audioLink)
       this.audio.load()
       this.playAudio()
+
+      this.setState({ loading: false })
     });
   }
 
@@ -345,6 +348,7 @@ class App extends Component {
               startIcon={<PlayArrowOutlined/>}
               //loading={this.loading}
               onClick={this.processText}
+              disabled={this.state.loading}
             >
               Play
             </Button>
