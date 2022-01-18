@@ -1,4 +1,4 @@
-import React, {Component, useState, useEffect} from "react";
+import React, {Component, useState, useEffect, useRef} from "react";
 import { ThemeProvider, createMuiTheme, makeStyles } from '@material-ui/core/styles';
 import { TextField } from "@mui/material";
 import Button from '@material-ui/core/Button';
@@ -11,6 +11,7 @@ import Stack from "@mui/material/Stack";
 import './App.css';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
+import LoadingBar from 'react-top-loading-bar';
 import * as MIDI from 'midicube';
 
 window.MIDI = MIDI; // Register to global first
@@ -89,9 +90,12 @@ class App extends Component {
       inputValue: '',
       loading: false,
       preset: 0,
+      progress: 0
     };
 
-    this.updateInputValue = this.updateInputValue.bind(this);
+    this.loadingBarRef = React.createRef()
+
+    this.updateInputValue = this.updateInputValue.bind(this)
     
     this.processText = this.processText.bind(this)
     this.processTextPreset1 = this.processTextPreset1.bind(this)
@@ -122,6 +126,9 @@ class App extends Component {
     //LoadingButtonsTransition.setLoading(true);
     //this.setLoading(true);
     //this.setState({ loading: true })
+    //this.setState({progress:10})
+
+    this.loadingBarRef.current.continuousStart()
 
     axios.post(websiteURL + 'api/v1/audio-profile/processtext', 
       { 
@@ -129,14 +136,19 @@ class App extends Component {
       }, 
       {
         onUploadProgress : (progressEvent) => {
-          let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          var percentCompleted = Math.round( (progressEvent.loaded * 100) / progressEvent.total );
           console.log(progressEvent.lengthComputable)
           console.log(percentCompleted);
+          //this.setState({progress:30})
        }
     })
     .then( res => { 
       //console.log(res.data.audioLink)
       console.log("playing audio file: " + s3URL + res.data.audioLink)
+
+      //this.setState({progress:80})
+      this.loadingBarRef.current.complete()
+
       this.audio = new Audio(s3URL + res.data.audioLink)
       this.audio.load()
       this.playAudio()
@@ -306,6 +318,9 @@ class App extends Component {
           
         <div className='main-container'>
 
+        {/* <LoadingBar color={"#f11946"} progress={this.state.progress} onLoaderFinished={() => this.setState({progress:0})} /> */}
+        <LoadingBar color="#f11946" ref={this.loadingBarRef} shadow={true} />
+
           <TextField
               id="userTextArea"
               variant="outlined"
@@ -323,16 +338,16 @@ class App extends Component {
             alignItems="center"
           >
 
-            <LoadingButton 
+            <Button 
               size="small"
               color="primary" 
               className='button' 
               startIcon={<PlayArrowOutlined/>}
-              loading={this.loading}
+              //loading={this.loading}
               onClick={this.processText}
             >
               Play
-            </LoadingButton>
+            </Button>
 
             <Button 
               size="small"
@@ -350,6 +365,7 @@ class App extends Component {
               color="secondary" 
               className='button' 
               onClick={this.processTextPreset2}
+              disabled
             >
               Phantom
             </Button>
