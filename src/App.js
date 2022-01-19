@@ -64,7 +64,7 @@ var mydata =
     mod: 'WORDTYPE',
     modValue: '11',
     soundMod: 'INSTRUMENT',
-    soundModValue: 'KOTO',
+    soundModValue: 'APPLAUSE',
     modOperator: 'EQUALTO',
     changeMode: 'SET',
     sentimentType: 'POSITIVESENTIMENT'
@@ -84,7 +84,9 @@ var mydata2 =
   }
 }
 
-var mydata3 = {
+var mydata3 = 
+{
+  instructions: {
       mod: 'LGC',
       modValue: '3',
       soundMod: 'OCTAVE',
@@ -92,6 +94,7 @@ var mydata3 = {
       modOperator: 'EQUALTO',
       changeMode: 'SET',
       sentimentType: 'POSITIVESENTIMENT'
+  }
 }
 //  ]
 //}
@@ -106,7 +109,8 @@ class App extends Component {
       inputValue: 'the quick brown fox jumped over the lazy dog',
       loading: false,
       preset: 0,
-      progress: 0
+      progress: 0,
+      bgColour: ""
     };
 
     // Loading bar
@@ -150,20 +154,18 @@ class App extends Component {
     this.loadingBarRef.current.continuousStart()
 
     //test
-    const mergedata = {
-      //instructions: [
-        ...mydata.instructions,
-        ...mydata2.instructions
-        //mydata3
-      //]
-    }
+    const mergedata = [
+        mydata.instructions,
+        mydata2.instructions
+    ]
+
+    console.log(mergedata)
 
     //axios.post(websiteURL + 'api/v1/audio-profile/processtext', 
     axios.post(websiteURL + 'api/v1/audio-profile/testjsonPOST', {
       textID: uuidv4(), 
       textData: this.state.inputValue,
       instructions: [
-        //mydata2
         //mydata.instructions
         mergedata
       ]
@@ -190,6 +192,10 @@ class App extends Component {
       return {preset: prevState.preset + 1}
     })
     console.log("Processing text: " + this.state.inputValue)
+
+    this.setState({
+      bgColour: "red"
+    })
   }
 
   processTextPreset2() {
@@ -295,14 +301,15 @@ class App extends Component {
     return (
       <div className='app'>
 
+        {/* <div className='top-bar' style={{backgroundColor: this.state.bgColour}}> */}
         <div className='top-bar'>
-          <h1>Build 1</h1>
+          <h1>Build</h1>
         </div>
           
         <div className='main-container'>
 
         {/* <LoadingBar color={"#f11946"} progress={this.state.progress} onLoaderFinished={() => this.setState({progress:0})} /> */}
-        <LoadingBar color="#f11946" ref={this.loadingBarRef} shadow={true} />
+        <LoadingBar color="#f11946" ref={this.loadingBarRef} shadow={true} height={3} />
 
           <TextField
               id="userTextArea"
@@ -351,7 +358,7 @@ class App extends Component {
               onClick={this.processTextPreset2}
               disabled
             >
-              Phantom
+              Test
             </Button>
 
             <Button 
@@ -360,6 +367,7 @@ class App extends Component {
               className='button' 
               disableElevation
               onClick={this.testjsonGET}
+              disabled
             >
               retrieve json
             </Button>
