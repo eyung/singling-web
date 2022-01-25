@@ -106,7 +106,7 @@ class App extends Component {
 
     // Set states
     this.state = {
-      inputValue: 'the quick brown fox jumped over the lazy dog',
+      inputValue: 'the quick brown fox jumped over the lazy dog', // remove after testing
       loading: false,
       preset: 0,
       progress: 0,
@@ -165,10 +165,8 @@ class App extends Component {
     axios.post(websiteURL + 'api/v1/audio-profile/testjsonPOST', {
       textID: uuidv4(), 
       textData: this.state.inputValue,
-      instructions: [
-        //mydata.instructions
+      instructions: 
         mergedata
-      ]
     })
 
     .then( res => { 
@@ -341,6 +339,7 @@ class App extends Component {
             </Button>
 
             <Button 
+              id="preset-button"
               size="small"
               color="secondary" 
               className='button' 
