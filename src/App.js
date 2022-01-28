@@ -80,7 +80,36 @@ const Header = () => {
   )
 }
 
-const ProcessText = (text, loadingBarRef) => {
+const ButtonPlay = (props) => {
+  const loadingBarRef = useRef(null);
+  const [loading, setLoading] = React.useState(false);
+  const handleSetLoading = () => {
+    setLoading(false)
+  }
+
+  return (
+    <div>
+      <LoadingBar color="#f11946" ref={loadingBarRef} shadow={true} height={3} />
+
+      <Button 
+        size="small"
+        color="primary" 
+        className='button' 
+        startIcon={<PlayArrowOutlined/>}
+        onClick={ () => {
+            setLoading(true)
+            ProcessText(props.text, loadingBarRef, handleSetLoading)
+          }
+        }
+        disabled={loading}
+      >
+        Play
+      </Button>
+    </div>
+  )
+}
+
+const ProcessText = (text, loadingBarRef, handleSetLoading) => {
   
   console.log("Processing text: " + text)
 
@@ -109,8 +138,10 @@ const ProcessText = (text, loadingBarRef) => {
     audio.load()
     playAudio(audio)
 
-    //setLoading(false)
+    handleSetLoading()
   });
+
+  return true;
 }
 
 const playAudio = (audio) => {
@@ -129,9 +160,9 @@ const playAudio = (audio) => {
 
 export default function App() {
   
-  const [loading, setLoading] = React.useState(false);
-  const [text, setText] = React.useState("test")
-  const loadingBarRef = useRef(null);
+  //const [loading, setLoading] = React.useState(false);
+  const [text, setText] = React.useState("")
+  //const loadingBarRef = useRef(null);
 
   return (
       <div className="App">
@@ -140,20 +171,11 @@ export default function App() {
 
           <div className="App-body main-container">
 
-            <LoadingBar color="#f11946" ref={loadingBarRef} shadow={true} height={3} />  
+            
 
             <Editor handleTextChange={setText} />
 
-            <Button 
-              size="small"
-              color="primary" 
-              className='button' 
-              startIcon={<PlayArrowOutlined/>}
-              onClick={ () => ProcessText(text, loadingBarRef)}
-              disabled={loading}
-            >
-              Play
-            </Button>
+            <ButtonPlay text={text} />
 
           </div>
 
