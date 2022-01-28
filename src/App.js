@@ -55,7 +55,7 @@ var mydata3 =
   }
 }
 
-// The `Editor` component receives the value and the change function as props. 
+// The Editor component receives the value and the change function as props. 
 const Editor = React.memo(({value, handleTextChange}) => {
   const onChange = e => handleTextChange(e.target.value)
   return (
@@ -71,19 +71,19 @@ const Editor = React.memo(({value, handleTextChange}) => {
 });
 
 // Header stuff
-const Header = () => <div>New build</div>;
+const Header = () => {
+  return (
+    //{ <div className='top-bar' style={{backgroundColor: this.state.bgColour}}> }
+    <div className='top-bar'>
+      <h1>Build</h1>
+    </div>
+  )
+}
 
 const ProcessText = (text, loadingBarRef) => {
-
-  //const [text, setText] = React.useState("");
-  //const [loading, setLoading] = React.useState(false);
   
   console.log("Processing text: " + text)
 
-  //this.setState({progress:10})
-  //this.setState({ loading: true })
-  //setLoading(true)
-  //const loadingBarRef = useRef(null);
   loadingBarRef.current.continuousStart()
 
   //test
@@ -91,7 +91,6 @@ const ProcessText = (text, loadingBarRef) => {
       mydata.instructions,
       mydata2.instructions
   ]
-
   console.log(mergedata)
 
   //axios.post(websiteURL + 'api/v1/audio-profile/processtext', 
@@ -104,7 +103,6 @@ const ProcessText = (text, loadingBarRef) => {
   .then( res => { 
     console.log("playing audio file: " + s3URL + res.data.audioLink)
 
-    //this.setState({progress:80})
     loadingBarRef.current.complete()
 
     const audio = new Audio(s3URL + res.data.audioLink)
@@ -129,39 +127,36 @@ const playAudio = (audio) => {
   }
 }
 
-// Main function
 export default function App() {
   
-  //const [progress, setProgress] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
   const [text, setText] = React.useState("test")
   const loadingBarRef = useRef(null);
-  //ref.current.continuousStart();
 
   return (
       <div className="App">
+
           <Header />
-          <div className="App-body">
 
-              <LoadingBar color="#f11946" ref={loadingBarRef} shadow={true} height={3} />  
+          <div className="App-body main-container">
 
+            <LoadingBar color="#f11946" ref={loadingBarRef} shadow={true} height={3} />  
 
-              <Editor handleTextChange={setText} />
+            <Editor handleTextChange={setText} />
 
-              
+            <Button 
+              size="small"
+              color="primary" 
+              className='button' 
+              startIcon={<PlayArrowOutlined/>}
+              onClick={ () => ProcessText(text, loadingBarRef)}
+              disabled={loading}
+            >
+              Play
+            </Button>
 
-              <Button 
-                size="small"
-                color="primary" 
-                className='button' 
-                startIcon={<PlayArrowOutlined/>}
-                //loading={this.loading}
-                onClick={ () => ProcessText(text, loadingBarRef)}
-                disabled={loading}
-              >
-                Play
-              </Button>
-              </div>
+          </div>
+
       </div>
   );
 }
