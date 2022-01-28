@@ -55,7 +55,7 @@ var mydata3 =
   }
 }
 
-// The Editor component receives the value and the change function as props. 
+// The Editor component receives the value and the change function as props
 const Editor = React.memo(({value, handleTextChange}) => {
   const onChange = e => handleTextChange(e.target.value)
   return (
@@ -80,6 +80,7 @@ const Header = () => {
   )
 }
 
+// Play button component receives value from textarea
 const ButtonPlay = (props) => {
   const loadingBarRef = useRef(null);
   const [loading, setLoading] = React.useState(false);
@@ -113,6 +114,7 @@ const ProcessText = (text, loadingBarRef, handleSetLoading) => {
   
   console.log("Processing text: " + text)
 
+  // Loading bar start 
   loadingBarRef.current.continuousStart()
 
   //test
@@ -132,19 +134,22 @@ const ProcessText = (text, loadingBarRef, handleSetLoading) => {
   .then( res => { 
     console.log("playing audio file: " + s3URL + res.data.audioLink)
 
+    // Finish loading bar
     loadingBarRef.current.complete()
 
     const audio = new Audio(s3URL + res.data.audioLink)
     audio.load()
-    playAudio(audio)
+    PlayAudio(audio)
 
+    // Enable play button again
     handleSetLoading()
   });
 
   return true;
 }
 
-const playAudio = (audio) => {
+// Receives audio and plays it
+const PlayAudio = (audio) => {
   const audioPromise = audio.play()
   if (audioPromise !== undefined) {
     audioPromise
@@ -160,9 +165,7 @@ const playAudio = (audio) => {
 
 export default function App() {
   
-  //const [loading, setLoading] = React.useState(false);
   const [text, setText] = React.useState("")
-  //const loadingBarRef = useRef(null);
 
   return (
       <div className="App">
@@ -170,8 +173,6 @@ export default function App() {
           <Header />
 
           <div className="App-body main-container">
-
-            
 
             <Editor handleTextChange={setText} />
 
