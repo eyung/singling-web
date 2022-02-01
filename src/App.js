@@ -5,6 +5,15 @@ import Icon from '@material-ui/core/Icon';
 import { IconButton } from "@mui/material";
 import AnimationIcon from '@mui/icons-material/Animation';
 import { PlayArrowOutlined, PlayArrowRounded, StayCurrentLandscapeOutlined } from "@material-ui/icons";
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Avatar from '@mui/material/Avatar';
+import FolderIcon from '@mui/icons-material/Folder';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Grid from '@mui/material/Grid';
 import Stack from "@mui/material/Stack";
 import './App.css';
 import axios from 'axios';
@@ -55,6 +64,18 @@ var mydata3 =
   }
 }
 
+var transformationArray = [mydata];
+
+// Header stuff
+const Header = () => {
+  return (
+    //{ <div className='top-bar' style={{backgroundColor: this.state.bgColour}}> }
+    <div className='top-bar'>
+      <h1>Build</h1>
+    </div>
+  )
+}
+
 // The Editor component receives the value and the change function as props
 const Editor = React.memo(({value, handleTextChange}) => {
   const onChange = e => handleTextChange(e.target.value)
@@ -69,16 +90,6 @@ const Editor = React.memo(({value, handleTextChange}) => {
         />
   );
 });
-
-// Header stuff
-const Header = () => {
-  return (
-    //{ <div className='top-bar' style={{backgroundColor: this.state.bgColour}}> }
-    <div className='top-bar'>
-      <h1>Build</h1>
-    </div>
-  )
-}
 
 // Play button component receives value from textarea
 const ButtonPlay = (props) => {
@@ -111,7 +122,6 @@ const ButtonPlay = (props) => {
 }
 
 const ProcessText = (text, loadingBarRef, handleSetLoading) => {
-  
   console.log("Processing text: " + text)
 
   // Loading bar start 
@@ -120,7 +130,8 @@ const ProcessText = (text, loadingBarRef, handleSetLoading) => {
   //test
   const mergedata = [
       mydata.instructions,
-      mydata2.instructions
+      mydata2.instructions,
+      mydata3.instructions
   ]
   console.log(mergedata)
 
@@ -151,6 +162,7 @@ const ProcessText = (text, loadingBarRef, handleSetLoading) => {
 // Receives audio and plays it
 const PlayAudio = (audio) => {
   const audioPromise = audio.play()
+
   if (audioPromise !== undefined) {
     audioPromise
       .then(_ => {
@@ -161,6 +173,63 @@ const PlayAudio = (audio) => {
         console.info(err)
       })
   }
+}
+
+const ButtonAddTransformation = () => {
+
+  const [transformationsData, setTransformationsData] = React.useState(transformationArray);
+  
+  const addTransformationData = () => {
+    setTransformationsData(transformationsData => [...transformationsData, mydata2])
+  };
+
+  return (
+    <Button 
+        size="small"
+        color="secondary" 
+        className='button' 
+        onClick={ () => {
+            addTransformationData()
+            console.log(transformationsData);
+          }
+        }
+      >
+        Add Transformation
+      </Button>
+  )
+}
+
+const TransformationItem = (props) => {
+  const [secondary, setSecondary] = React.useState(false);
+  return (
+      <ListItem
+        secondaryAction={
+          <IconButton edge="end" aria-label="delete">
+            <DeleteIcon />
+          </IconButton>
+        }
+      >
+        <ListItemAvatar>
+          <Avatar>
+            <FolderIcon />
+          </Avatar>
+        </ListItemAvatar>
+        <ListItemText
+          primary="Single-line item"
+          secondary={secondary ? 'Secondary text' : null}
+        />
+      </ListItem>
+  )
+}
+
+const TransformationList = (props) => {
+  return (
+    <div>
+      <Grid item xs={12} md={6}>
+        {props.transformationsData}
+      </Grid> 
+    </div>
+  )
 }
 
 export default function App() {
@@ -177,6 +246,10 @@ export default function App() {
             <Editor handleTextChange={setText} />
 
             <ButtonPlay text={text} />
+
+            <TransformationList />
+
+            <ButtonAddTransformation />
 
           </div>
 
