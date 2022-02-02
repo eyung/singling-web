@@ -1,4 +1,5 @@
 import React, {Component, useState, useEffect, useRef} from "react";
+import ReactDOM from 'react-dom';
 import { TextField } from "@mui/material";
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
@@ -175,12 +176,14 @@ const PlayAudio = (audio) => {
   }
 }
 
-const ButtonAddTransformation = () => {
 
-  const [transformationsData, setTransformationsData] = React.useState(transformationArray);
-  
-  const addTransformationData = () => {
+
+const ButtonAddTransformation = ({transformationsData, setTransformationsData}) => {
+
+  const AddTransformationData = () => {
     setTransformationsData(transformationsData => [...transformationsData, mydata2])
+    //TransformationItem(mydata3)
+    //console.log(JSON.stringify(mydata2))
   };
 
   return (
@@ -189,7 +192,7 @@ const ButtonAddTransformation = () => {
         color="secondary" 
         className='button' 
         onClick={ () => {
-            addTransformationData()
+            AddTransformationData()
             console.log(transformationsData);
           }
         }
@@ -199,34 +202,20 @@ const ButtonAddTransformation = () => {
   )
 }
 
-const TransformationItem = (props) => {
-  const [secondary, setSecondary] = React.useState(false);
+const TransformationItem = ({data}) => {
+  const [transformationText, setTransformationText] = React.useState("")
+  //setTransformationText(JSON.stringify(data))
+
   return (
-      <ListItem
-        secondaryAction={
-          <IconButton edge="end" aria-label="delete">
-            <DeleteIcon />
-          </IconButton>
-        }
-      >
-        <ListItemAvatar>
-          <Avatar>
-            <FolderIcon />
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText
-          primary="Single-line item"
-          secondary={secondary ? 'Secondary text' : null}
-        />
-      </ListItem>
+    <h1>hello: {JSON.stringify(data)}</h1>
+
   )
 }
 
-const TransformationList = (props) => {
+const TransformationList = () => {
   return (
-    <div>
+    <div className="grid" id="grid">
       <Grid item xs={12} md={6}>
-        {props.transformationsData}
       </Grid> 
     </div>
   )
@@ -235,6 +224,7 @@ const TransformationList = (props) => {
 export default function App() {
   
   const [text, setText] = React.useState("")
+  const [transformationsData, setTransformationsData] = React.useState(transformationArray);
 
   return (
       <div className="App">
@@ -249,7 +239,9 @@ export default function App() {
 
             <TransformationList />
 
-            <ButtonAddTransformation />
+            <TransformationItem data={mydata2} />
+
+            <ButtonAddTransformation transformationsData={transformationsData} setTransformationsData={setTransformationsData} />
 
           </div>
 
