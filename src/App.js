@@ -1,4 +1,4 @@
-import React, {Component, useState, useEffect, useRef} from "react";
+import React, {Component, useState, useEffect, useRef, useCallback} from "react";
 import ReactDOM from 'react-dom';
 import { TextField } from "@mui/material";
 import Button from '@material-ui/core/Button';
@@ -176,24 +176,15 @@ const PlayAudio = (audio) => {
   }
 }
 
-
-
 const ButtonAddTransformation = ({transformationsData, setTransformationsData}) => {
-
-  const AddTransformationData = () => {
-    setTransformationsData(transformationsData => [...transformationsData, mydata2])
-    //TransformationItem(mydata3)
-    //console.log(JSON.stringify(mydata2))
-  };
-
   return (
     <Button 
         size="small"
         color="secondary" 
         className='button' 
         onClick={ () => {
-            AddTransformationData()
-            console.log(transformationsData);
+          setTransformationsData(transformationsData => [...transformationsData, mydata2])
+          console.log(transformationsData)
           }
         }
       >
@@ -202,13 +193,14 @@ const ButtonAddTransformation = ({transformationsData, setTransformationsData}) 
   )
 }
 
-const TransformationItem = ({data}) => {
+const TransformationItem = ({transformationsData, onTransformationAdd}) => {
   const [transformationText, setTransformationText] = React.useState("")
-  //setTransformationText(JSON.stringify(data))
+  const handleTransformationAdd = useCallback(e => {
+    onTransformationAdd(e.target.value)
+  }, [onTransformationAdd])
 
   return (
-    <h1>hello: {JSON.stringify(data)}</h1>
-
+    <h1>{JSON.stringify(transformationsData)}</h1>
   )
 }
 
@@ -239,10 +231,10 @@ export default function App() {
 
             <TransformationList />
 
-            <TransformationItem data={mydata2} />
+            <TransformationItem transformationsData={transformationsData} onTransformationAdd={setTransformationsData} />
 
             <ButtonAddTransformation transformationsData={transformationsData} setTransformationsData={setTransformationsData} />
-
+          
           </div>
 
       </div>
