@@ -1,4 +1,4 @@
-import React, {Component, useState, useEffect, useRef, useCallback} from "react";
+import React, {Component, useState, useEffect, useRef, useCallback, Fragment} from "react";
 import ReactDOM from 'react-dom';
 import { TextField } from "@mui/material";
 import Button from '@material-ui/core/Button';
@@ -14,11 +14,13 @@ import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
 import FolderIcon from '@mui/icons-material/Folder';
 import DeleteIcon from '@mui/icons-material/Delete';
+import LabelIcon from '@mui/icons-material/Label';
 import Grid from '@mui/material/Grid';
 import Stack from "@mui/material/Stack";
 import './App.css';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
+import { nanoid } from 'nanoid';
 import LoadingBar from 'react-top-loading-bar';
 
 // Config
@@ -28,7 +30,7 @@ const s3URL = "https://effiam-bucket.s3.ca-central-1.amazonaws.com/audio/"
 
 var mydata = 
 {
-  instructions: {
+
     mod: 'WORDTYPE',
     modValue: '11',
     soundMod: 'INSTRUMENT',
@@ -36,12 +38,12 @@ var mydata =
     modOperator: 'EQUALTO',
     changeMode: 'SET',
     sentimentType: 'POSITIVESENTIMENT'
-  }
+  
 }
 
 var mydata2 =
 {
-  instructions: {
+
     mod: 'WORDLENGTH',
     modValue: '5',
     soundMod: 'INSTRUMENT',
@@ -49,12 +51,12 @@ var mydata2 =
     modOperator: 'EQUALTO',
     changeMode: 'SET',
     sentimentType: 'POSITIVESENTIMENT'
-  }
+  
 }
 
 var mydata3 = 
 {
-  instructions: {
+  //instructions: {
       mod: 'LGC',
       modValue: '3',
       soundMod: 'OCTAVE',
@@ -62,7 +64,7 @@ var mydata3 =
       modOperator: 'EQUALTO',
       changeMode: 'SET',
       sentimentType: 'POSITIVESENTIMENT'
-  }
+  //}
 }
 
 var transformationArray = [mydata];
@@ -93,7 +95,7 @@ const Editor = React.memo(({value, handleTextChange}) => {
 });
 
 // Play button component receives value from textarea
-const ButtonPlay = (props) => {
+const ButtonPlay = ({text, transformationsData}) => {
   const loadingBarRef = useRef(null);
   const [loading, setLoading] = React.useState(false);
   const handleSetLoading = () => {
@@ -111,7 +113,7 @@ const ButtonPlay = (props) => {
         startIcon={<PlayArrowOutlined/>}
         onClick={ () => {
             setLoading(true)
-            ProcessText(props.text, loadingBarRef, handleSetLoading)
+            ProcessText(text, transformationsData, loadingBarRef, handleSetLoading)
           }
         }
         disabled={loading}
@@ -122,7 +124,7 @@ const ButtonPlay = (props) => {
   )
 }
 
-const ProcessText = (text, loadingBarRef, handleSetLoading) => {
+const ProcessText = (text, transformationsData, loadingBarRef, handleSetLoading) => {
   console.log("Processing text: " + text)
 
   // Loading bar start 
@@ -134,13 +136,14 @@ const ProcessText = (text, loadingBarRef, handleSetLoading) => {
       mydata2.instructions,
       mydata3.instructions
   ]
-  console.log(mergedata)
+
+  console.log(JSON.stringify(transformationsData))
 
   //axios.post(websiteURL + 'api/v1/audio-profile/processtext', 
   axios.post(websiteURL + 'api/v1/audio-profile/testjsonPOST', {
     textID: uuidv4(), 
     textData: text,
-    instructions: mergedata
+    instructions: transformationsData
   })
 
   .then( res => { 
@@ -176,7 +179,7 @@ const PlayAudio = (audio) => {
   }
 }
 
-const ButtonAddTransformation = ({transformationsData, setTransformationsData}) => {
+const ButtonAddTransformation = ({transformationsData, setTransformationsData, addHandler}) => {
   return (
     <Button 
         size="small"
@@ -184,6 +187,7 @@ const ButtonAddTransformation = ({transformationsData, setTransformationsData}) 
         className='button' 
         onClick={ () => {
           setTransformationsData(transformationsData => [...transformationsData, mydata2])
+          addHandler()
           console.log(transformationsData)
           }
         }
@@ -193,14 +197,30 @@ const ButtonAddTransformation = ({transformationsData, setTransformationsData}) 
   )
 }
 
-const TransformationItem = ({transformationsData, onTransformationAdd}) => {
-  const [transformationText, setTransformationText] = React.useState("")
+const TransformationItem = ({transformationsData, onTransformationAdd, deleteHandler}) => {
+  //const [transformationText, setTransformationText] = React.useState("")
   const handleTransformationAdd = useCallback(e => {
     onTransformationAdd(e.target.value)
   }, [onTransformationAdd])
 
   return (
-    <h1>{JSON.stringify(transformationsData)}</h1>
+    <ListItem
+      secondaryAction={
+        <IconButton edge="end" aria-label="delete" onClick={deleteHandler}>
+          <DeleteIcon />
+        </IconButton>
+      }
+    >
+      <ListItemAvatar>
+        <Avatar>
+          <LabelIcon />
+        </Avatar>
+      </ListItemAvatar>
+      <ListItemText
+        //primary= {JSON.stringify(transformationsData)}
+        primary = {JSON.stringify(mydata2)}
+      />
+    </ListItem>
   )
 }
 
@@ -213,10 +233,26 @@ const TransformationList = () => {
   )
 }
 
+function Comp2({ deleteHandler }) {
+  return (
+  <div>
+  <input type="button" id="delete" value="Delete" 
+        onClick={deleteHandler} />
+  </div>
+  )
+}
+
 export default function App() {
   
   const [text, setText] = React.useState("")
   const [transformationsData, setTransformationsData] = React.useState(transformationArray);
+
+  const [ids, setIds] = useState([])
+  const addHandler = () => {
+    const newId = nanoid()
+    setIds(ids => [...ids, newId])
+  }
+  const deleteHandler = (removeId) => setIds(ids => ids.filter(id => id !== removeId))
 
   return (
       <div className="App">
@@ -227,13 +263,29 @@ export default function App() {
 
             <Editor handleTextChange={setText} />
 
-            <ButtonPlay text={text} />
+            <ButtonPlay text={text} transformationsData={transformationsData} />
 
-            <TransformationList />
+            {/* <TransformationList /> */}
+            <div className="grid" id="grid">
+                <Grid item xs={12} md={6}>
+                    <List>
+                      {/* <TransformationItem transformationsData={transformationsData} onTransformationAdd={setTransformationsData} /> 
 
-            <TransformationItem transformationsData={transformationsData} onTransformationAdd={setTransformationsData} />
+                       { { ids.map(id => <Comp2 key={id} deleteHandler={() => deleteHandler(id)} />) }
 
-            <ButtonAddTransformation transformationsData={transformationsData} setTransformationsData={setTransformationsData} />
+                       <input type="button" id="add" value="Add" onClick={addHandler} /> } */}
+
+                      <ButtonAddTransformation transformationsData={transformationsData} setTransformationsData={setTransformationsData} addHandler={addHandler} />
+
+                      { ids.map(id => <TransformationItem transformationsData={transformationsData} onTransformationAdd={setTransformationsData} key={id} deleteHandler={() => deleteHandler(id)} />) } 
+                        
+                    </List>
+                </Grid>
+            </div>  
+
+            
+
+            
           
           </div>
 
