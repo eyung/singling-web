@@ -67,7 +67,7 @@ var mydata3 =
   //}
 }
 
-var transformationArray = [mydata];
+var transformationArray = [];
 
 // Header stuff
 const Header = () => {
@@ -179,16 +179,14 @@ const PlayAudio = (audio) => {
   }
 }
 
-const ButtonAddTransformation = ({transformationsData, setTransformationsData, addHandler}) => {
+const ButtonAddTransformation = ({addHandler}) => {
   return (
     <Button 
         size="small"
         color="secondary" 
         className='button' 
         onClick={ () => {
-          setTransformationsData(transformationsData => [...transformationsData, mydata2])
           addHandler()
-          console.log(transformationsData)
           }
         }
       >
@@ -218,7 +216,7 @@ const TransformationItem = ({transformationsData, onTransformationAdd, deleteHan
       </ListItemAvatar>
       <ListItemText
         //primary= {JSON.stringify(transformationsData)}
-        primary = {JSON.stringify(mydata2)}
+        primary = {JSON.stringify(mydata)}
       />
     </ListItem>
   )
@@ -233,26 +231,28 @@ const TransformationList = () => {
   )
 }
 
-function Comp2({ deleteHandler }) {
-  return (
-  <div>
-  <input type="button" id="delete" value="Delete" 
-        onClick={deleteHandler} />
-  </div>
-  )
-}
-
 export default function App() {
   
   const [text, setText] = React.useState("")
   const [transformationsData, setTransformationsData] = React.useState(transformationArray);
+  const [ids, setIds] = React.useState([])
 
-  const [ids, setIds] = useState([])
   const addHandler = () => {
     const newId = nanoid()
     setIds(ids => [...ids, newId])
+
+    setTransformationsData(transformationsData => [...transformationsData, mydata])
   }
-  const deleteHandler = (removeId) => setIds(ids => ids.filter(id => id !== removeId))
+
+  const deleteHandler = (removeId) => {
+    setIds(ids => ids.filter(id => id !== removeId))
+
+    const reducedArr = [... transformationsData]
+    reducedArr.splice(removeId, 1)
+    setTransformationsData(reducedArr)
+  }
+
+  //console.log(transformationsData)
 
   return (
       <div className="App">
@@ -269,13 +269,8 @@ export default function App() {
             <div className="grid" id="grid">
                 <Grid item xs={12} md={6}>
                     <List>
-                      {/* <TransformationItem transformationsData={transformationsData} onTransformationAdd={setTransformationsData} /> 
 
-                       { { ids.map(id => <Comp2 key={id} deleteHandler={() => deleteHandler(id)} />) }
-
-                       <input type="button" id="add" value="Add" onClick={addHandler} /> } */}
-
-                      <ButtonAddTransformation transformationsData={transformationsData} setTransformationsData={setTransformationsData} addHandler={addHandler} />
+                      <ButtonAddTransformation addHandler={addHandler} />
 
                       { ids.map(id => <TransformationItem transformationsData={transformationsData} onTransformationAdd={setTransformationsData} key={id} deleteHandler={() => deleteHandler(id)} />) } 
                         
@@ -283,10 +278,6 @@ export default function App() {
                 </Grid>
             </div>  
 
-            
-
-            
-          
           </div>
 
       </div>
