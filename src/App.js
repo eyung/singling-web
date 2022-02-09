@@ -17,6 +17,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import LabelIcon from '@mui/icons-material/Label';
 import Grid from '@mui/material/Grid';
 import Stack from "@mui/material/Stack";
+import { Paper } from "@mui/material";
 import './App.css';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
@@ -69,6 +70,7 @@ var mydata3 =
 
 var transformationArray = [];
 
+
 // Header stuff
 const Header = () => {
   return (
@@ -81,13 +83,12 @@ const Header = () => {
 
 // The Editor component receives the value and the change function as props
 const Editor = React.memo(({value, handleTextChange}) => {
-  const onChange = e => handleTextChange(e.target.value)
   return (
         <TextField
             id="userTextArea"
             variant="outlined"
             multiline
-            rows={4}
+            rows={4} 
             value={value}
             onChange={e => handleTextChange(e.target.value)}
         />
@@ -179,14 +180,14 @@ const PlayAudio = (audio) => {
   }
 }
 
-const ButtonAddTransformation = ({addHandler}) => {
+const ButtonAddTransformation = ({addHandler, data}) => {
   return (
     <Button 
         size="small"
         color="secondary" 
         className='button' 
         onClick={ () => {
-          addHandler()
+          addHandler(data)
           }
         }
       >
@@ -195,39 +196,34 @@ const ButtonAddTransformation = ({addHandler}) => {
   )
 }
 
-const TransformationItem = ({transformationsData, onTransformationAdd, deleteHandler}) => {
+const TransformationItem = ({transformationsData, onTransformationAdd, data, deleteHandler}) => {
   //const [transformationText, setTransformationText] = React.useState("")
   const handleTransformationAdd = useCallback(e => {
     onTransformationAdd(e.target.value)
   }, [onTransformationAdd])
 
-  return (
-    <ListItem
-      secondaryAction={
-        <IconButton edge="end" aria-label="delete" onClick={deleteHandler}>
-          <DeleteIcon />
-        </IconButton>
-      }
-    >
-      <ListItemAvatar>
-        <Avatar>
-          <LabelIcon />
-        </Avatar>
-      </ListItemAvatar>
-      <ListItemText
-        //primary= {JSON.stringify(transformationsData)}
-        primary = {JSON.stringify(mydata)}
-      />
-    </ListItem>
-  )
-}
+  const [open, setOpen] = React.useState(true);
 
-const TransformationList = () => {
+  const handleClick = () => {
+    setOpen(!open);
+  };
+
   return (
-    <div className="grid" id="grid">
-      <Grid item xs={12} md={6}>
-      </Grid> 
-    </div>
+    
+      <ListItem className="TransformationListItem"
+        secondaryAction={
+          <IconButton edge="end" aria-label="delete" onClick={deleteHandler}>
+            <DeleteIcon />
+          </IconButton>
+        }
+      >
+        <ListItemText
+          //primary= {JSON.stringify(transformationsData)}
+          primary = {`CHANGE ${data.mod} ${data.modValue} TO ${data.soundMod} ${data.soundModValue}`}
+        />
+      </ListItem>
+    
+    
   )
 }
 
@@ -237,13 +233,18 @@ export default function App() {
   const [transformationsData, setTransformationsData] = React.useState(transformationArray);
   const [ids, setIds] = React.useState([])
 
-  const addHandler = () => {
+  // TODO: Transformation to add
+  let data = mydata2
+
+  // Add transformation
+  const addHandler = (data) => {
     const newId = nanoid()
     setIds(ids => [...ids, newId])
 
-    setTransformationsData(transformationsData => [...transformationsData, mydata])
+    setTransformationsData(transformationsData => [...transformationsData, data])
   }
 
+  // Delete transformation 
   const deleteHandler = (removeId) => {
     setIds(ids => ids.filter(id => id !== removeId))
 
@@ -265,19 +266,22 @@ export default function App() {
 
             <ButtonPlay text={text} transformationsData={transformationsData} />
 
+            <ButtonAddTransformation addHandler={addHandler} data={data} />
+
             {/* <TransformationList /> */}
             <div className="grid" id="grid">
-                <Grid item xs={12} md={6}>
-                    <List>
+              <Grid container spacing={2}>
+                  <Grid item xs={12} md={12}>
+                      <List>
 
-                      <ButtonAddTransformation addHandler={addHandler} />
-
-                      { ids.map(id => <TransformationItem transformationsData={transformationsData} onTransformationAdd={setTransformationsData} key={id} deleteHandler={() => deleteHandler(id)} />) } 
-                        
-                    </List>
+                        { ids.map(id => <TransformationItem transformationsData={transformationsData} onTransformationAdd={setTransformationsData} data={data} key={id} deleteHandler={() => deleteHandler(id)} />) } 
+                          
+                      </List>
+                  </Grid>
                 </Grid>
             </div>  
 
+            
           </div>
 
       </div>

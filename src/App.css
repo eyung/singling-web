@@ -83,6 +83,15 @@ html, body, #app, #app>div {
   margin-top: 2rem;
 }
 
+.TransformationListItem {
+  /*margin-bottom: 0.5rem;*/
+}
+
+.TransformationListItem span {
+  font-size: 0.8rem;
+  font-family: inherit;
+}
+
 .MuiButtonBase-root {
   margin-top: 20px;
   margin-right: 10px;
