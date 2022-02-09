@@ -1,11 +1,10 @@
-import React, {Component, useState, useEffect, useRef, useCallback, Fragment} from "react";
-import ReactDOM from 'react-dom';
+import React, {Component, useState, useEffect, useRef, useCallback} from "react";
 import { TextField } from "@mui/material";
 import Button from '@material-ui/core/Button';
-import Icon from '@material-ui/core/Icon';
 import { IconButton } from "@mui/material";
-import AnimationIcon from '@mui/icons-material/Animation';
 import { PlayArrowOutlined, PlayArrowRounded, StayCurrentLandscapeOutlined } from "@material-ui/icons";
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import AddIcon from '@mui/icons-material/Add';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
@@ -14,9 +13,10 @@ import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
 import FolderIcon from '@mui/icons-material/Folder';
 import DeleteIcon from '@mui/icons-material/Delete';
-import LabelIcon from '@mui/icons-material/Label';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import RemoveIcon from '@mui/icons-material/Remove';
+import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
 import Grid from '@mui/material/Grid';
-import Stack from "@mui/material/Stack";
 import { Paper } from "@mui/material";
 import './App.css';
 import axios from 'axios';
@@ -85,10 +85,12 @@ const Header = () => {
 const Editor = React.memo(({value, handleTextChange}) => {
   return (
         <TextField
-            id="userTextArea"
-            variant="outlined"
+            id="textfield"
+            variant="standard"
+              InputProps = {{disableUnderline: true}}
             multiline
-            rows={4} 
+            rows={10} 
+            autoFocus 
             value={value}
             onChange={e => handleTextChange(e.target.value)}
         />
@@ -111,7 +113,7 @@ const ButtonPlay = ({text, transformationsData}) => {
         size="small"
         color="primary" 
         className='button' 
-        startIcon={<PlayArrowOutlined/>}
+        startIcon={<PlayArrowIcon/>}
         onClick={ () => {
             setLoading(true)
             ProcessText(text, transformationsData, loadingBarRef, handleSetLoading)
@@ -184,8 +186,9 @@ const ButtonAddTransformation = ({addHandler, data}) => {
   return (
     <Button 
         size="small"
-        color="secondary" 
-        className='button' 
+        color="secondary"
+        className='button'
+        startIcon={<AddIcon/>}
         onClick={ () => {
           addHandler(data)
           }
@@ -197,29 +200,23 @@ const ButtonAddTransformation = ({addHandler, data}) => {
 }
 
 const TransformationItem = ({transformationsData, onTransformationAdd, data, deleteHandler}) => {
-  //const [transformationText, setTransformationText] = React.useState("")
+ 
   const handleTransformationAdd = useCallback(e => {
     onTransformationAdd(e.target.value)
   }, [onTransformationAdd])
-
-  const [open, setOpen] = React.useState(true);
-
-  const handleClick = () => {
-    setOpen(!open);
-  };
 
   return (
     
       <ListItem className="TransformationListItem"
         secondaryAction={
           <IconButton edge="end" aria-label="delete" onClick={deleteHandler}>
-            <DeleteIcon />
+            <DeleteOutlineIcon />
           </IconButton>
         }
       >
         <ListItemText
           //primary= {JSON.stringify(transformationsData)}
-          primary = {`CHANGE ${data.mod} ${data.modValue} TO ${data.soundMod} ${data.soundModValue}`}
+          primary = {`CHANGE ${data.soundMod} TO ${data.soundModValue} WHEN ${data.mod} IS ${data.modOperator} ${data.modValue}`}
         />
       </ListItem>
     
@@ -248,7 +245,7 @@ export default function App() {
   const deleteHandler = (removeId) => {
     setIds(ids => ids.filter(id => id !== removeId))
 
-    const reducedArr = [... transformationsData]
+    const reducedArr = [...transformationsData]
     reducedArr.splice(removeId, 1)
     setTransformationsData(reducedArr)
   }
