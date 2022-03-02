@@ -184,7 +184,8 @@ const PlayAudio = (audio) => {
 
 const ButtonAddTransformation = ({addHandler, data}) => {
   return (
-    <Button 
+    <div>
+      <Button 
         size="small"
         color="secondary"
         className='button'
@@ -194,8 +195,9 @@ const ButtonAddTransformation = ({addHandler, data}) => {
           }
         }
       >
-        Add Transformation
+        Transformation
       </Button>
+    </div>
   )
 }
 
