@@ -70,7 +70,11 @@ html, body, #app, #app>div {
   max-width: 750px;
   margin: auto;
   padding-top: 50px;
+  position: relative;
+}
 
+.bottom-bar {
+  
 }
 
 #textfield {

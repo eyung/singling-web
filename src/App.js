@@ -23,6 +23,10 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { nanoid } from 'nanoid';
 import LoadingBar from 'react-top-loading-bar';
+import BottomNavigation from '@mui/material/BottomNavigation';
+import BottomNavigationAction from '@mui/material/BottomNavigationAction';
+import Fab from '@mui/material/Fab';
+import Box from '@mui/material/Box';
 
 // Config
 //const websiteURL = "http://localhost:3000/"
@@ -81,6 +85,18 @@ const Header = () => {
   )
 }
 
+const BottomNav = ({text, transformationsData, addHandler, data}) => {
+
+  return (
+    <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
+      <BottomNavigation>
+        <ButtonPlay text={text} transformationsData={transformationsData} />
+        <ButtonAddTransformation addHandler={addHandler} data={data} />
+      </BottomNavigation>
+    </Paper>
+  );
+}
+
 // The Editor component receives the value and the change function as props
 const Editor = React.memo(({value, handleTextChange}) => {
   return (
@@ -110,10 +126,10 @@ const ButtonPlay = ({text, transformationsData}) => {
       <LoadingBar color="#f11946" ref={loadingBarRef} shadow={true} height={3} />
 
       <Button 
-        size="small"
+        size="large"
         color="primary" 
         className='button' 
-        startIcon={<PlayArrowIcon/>}
+        startIcon={<PlayArrowRounded/>}
         onClick={ () => {
             setLoading(true)
             ProcessText(text, transformationsData, loadingBarRef, handleSetLoading)
@@ -121,7 +137,6 @@ const ButtonPlay = ({text, transformationsData}) => {
         }
         disabled={loading}
       >
-        Play
       </Button>
     </div>
   )
@@ -186,7 +201,7 @@ const ButtonAddTransformation = ({addHandler, data}) => {
   return (
     <div>
       <Button 
-        size="small"
+        size="large"
         color="secondary"
         className='button'
         startIcon={<AddIcon/>}
@@ -195,7 +210,6 @@ const ButtonAddTransformation = ({addHandler, data}) => {
           }
         }
       >
-        Transformation
       </Button>
     </div>
   )
@@ -263,9 +277,6 @@ export default function App() {
 
             <Editor handleTextChange={setText} />
 
-            <ButtonPlay text={text} transformationsData={transformationsData} />
-
-            <ButtonAddTransformation addHandler={addHandler} data={data} />
 
             {/* <TransformationList /> */}
             <div className="grid" id="grid">
@@ -280,8 +291,10 @@ export default function App() {
                 </Grid>
             </div>  
 
-            
           </div>
+
+
+          <BottomNav text={text} transformationsData={transformationsData} addHandler={addHandler} data={data} />
 
       </div>
   );
