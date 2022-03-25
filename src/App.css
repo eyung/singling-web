@@ -67,14 +67,10 @@ html, body, #app, #app>div {
 .main-container {
   display: flex;
   flex-direction: column;
-  max-width: 750px;
+  max-width: 900px;
   margin: auto;
   padding-top: 50px;
   position: relative;
-}
-
-.bottom-bar {
-  
 }
 
 #textfield {
