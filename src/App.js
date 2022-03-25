@@ -2,7 +2,7 @@ import React, {Component, useState, useEffect, useRef, useCallback} from "react"
 import { TextField } from "@mui/material";
 import Button from '@material-ui/core/Button';
 import { IconButton } from "@mui/material";
-import { PlayArrowOutlined, PlayArrowRounded, StayCurrentLandscapeOutlined } from "@material-ui/icons";
+import { PlayArrowOutlined, PlayArrowRounded } from "@material-ui/icons";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import AddIcon from '@mui/icons-material/Add';
 import List from '@mui/material/List';
@@ -24,9 +24,21 @@ import { v4 as uuidv4 } from 'uuid';
 import { nanoid } from 'nanoid';
 import LoadingBar from 'react-top-loading-bar';
 import BottomNavigation from '@mui/material/BottomNavigation';
-import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import Fab from '@mui/material/Fab';
 import Box from '@mui/material/Box';
+import { Fab } from "@mui/material";
+import { SpeedDial } from "@mui/material";
+import { SpeedDialAction } from "@mui/material";
+import { SpeedDialIcon } from "@mui/material";
+import FileCopyIcon from '@mui/icons-material/FileCopyOutlined';
+import SaveIcon from '@mui/icons-material/Save';
+import PrintIcon from '@mui/icons-material/Print';
+import ShareIcon from '@mui/icons-material/Share';
+import AbcIcon from '@mui/icons-material/Abc';
+import DownloadIcon from '@mui/icons-material/Download';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import MenuIcon from '@mui/icons-material/Menu';
 
 // Config
 //const websiteURL = "http://localhost:3000/"
@@ -78,20 +90,50 @@ var transformationArray = [];
 // Header stuff
 const Header = () => {
   return (
-    //{ <div className='top-bar' style={{backgroundColor: this.state.bgColour}}> }
-    <div className='top-bar'>
-      <h1>Build</h1>
-    </div>
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="static">
+        <Toolbar>
+          
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            Build
+          </Typography>
+
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 2 }}
+          >
+            <MenuIcon />
+          </IconButton>
+
+        </Toolbar>
+      </AppBar>
+    </Box>
   )
 }
 
 const BottomNav = ({text, transformationsData, addHandler, data}) => {
-
   return (
-    <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
+    <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, pt: "1rem" }} elevation={3}>
       <BottomNavigation>
-        <ButtonPlay text={text} transformationsData={transformationsData} />
-        <ButtonAddTransformation addHandler={addHandler} data={data} />
+        <Grid container maxWidth="sm">
+          <Grid item xs={6} md={6}>
+            <Box display="flex" justifyContent="flex-start">
+              <ButtonPlay text={text} transformationsData={transformationsData} />
+            </Box>
+          </Grid>
+       
+          <Grid item xs={6} md={6}>
+            <Box display="flex" justifyContent="flex-end">
+              <IconButton>
+                <DownloadIcon />
+              </IconButton>
+            </Box>
+          </Grid>
+          
+        </Grid>
       </BottomNavigation>
     </Paper>
   );
@@ -103,7 +145,7 @@ const Editor = React.memo(({value, handleTextChange}) => {
         <TextField
             id="textfield"
             variant="standard"
-              InputProps = {{disableUnderline: true}}
+            InputProps = {{disableUnderline: true}}
             multiline
             rows={10} 
             autoFocus 
@@ -122,14 +164,13 @@ const ButtonPlay = ({text, transformationsData}) => {
   }
 
   return (
-    <div>
+    <Box>
       <LoadingBar color="#f11946" ref={loadingBarRef} shadow={true} height={3} />
 
-      <Button 
-        size="large"
+      <IconButton 
+        size="small"
         color="primary" 
         className='button' 
-        startIcon={<PlayArrowRounded/>}
         onClick={ () => {
             setLoading(true)
             ProcessText(text, transformationsData, loadingBarRef, handleSetLoading)
@@ -137,8 +178,9 @@ const ButtonPlay = ({text, transformationsData}) => {
         }
         disabled={loading}
       >
-      </Button>
-    </div>
+        <PlayArrowRounded />
+      </IconButton>
+    </Box>
   )
 }
 
@@ -200,18 +242,91 @@ const PlayAudio = (audio) => {
 const ButtonAddTransformation = ({addHandler, data}) => {
   return (
     <div>
-      <Button 
+      <IconButton 
         size="large"
         color="secondary"
         className='button'
-        startIcon={<AddIcon/>}
         onClick={ () => {
           addHandler(data)
           }
         }
       >
-      </Button>
+        <AddIcon />
+      </IconButton>
     </div>
+  )
+}
+
+const FABAddTransformation = ({addHandler, data}) => {
+
+  const actions = [
+    { icon: (
+        <AbcIcon 
+          style={{ fill: '#208AAE' }}
+          onClick = {() => addHandler(data)}
+        />
+      ),
+      name: 'Part of speech' },
+    { icon: (
+        <AbcIcon 
+          style={{ fill: '#208AAE ' }}
+          onClick = {() => addHandler(data)}
+        />
+      ),
+      name: 'Word length' },
+    { icon: (
+        <AbcIcon 
+          style={{ fill: '#208AAE' }}
+          onClick = {() => addHandler(data)}
+        />
+      ),
+      name: 'Lexicographer files' },
+    { icon: (
+        <AbcIcon 
+          style={{ fill: '#208AAE' }}
+          onClick = {() => addHandler(data)}
+        />
+      ),
+      name: 'Punctuation' }
+  ];
+
+  return (
+    <Box>
+
+{/*       <Fab
+        sx={{
+          position: "fixed",
+          bottom: (theme) => theme.spacing(10),
+          right: (theme) => theme.spacing(2)
+        }}
+        color="primary"
+        onClick={ () => {
+          addHandler(data)
+          }
+        }
+      >
+        <AddIcon />
+      </Fab> */}
+
+      <SpeedDial
+        ariaLabel="Add transformation"
+        sx={{ 
+          position: "fixed",
+          bottom: (theme) => theme.spacing(10),
+          right: (theme) => theme.spacing(2)
+        }}
+        icon={<SpeedDialIcon />}
+      >
+        {actions.map((action) => (
+          <SpeedDialAction
+            key={action.name}
+            icon={action.icon}
+            tooltipTitle={action.name}
+          />
+        ))}
+      </SpeedDial>
+
+    </Box>
   )
 }
 
@@ -225,7 +340,7 @@ const TransformationItem = ({transformationsData, onTransformationAdd, data, del
     
       <ListItem className="TransformationListItem"
         secondaryAction={
-          <IconButton edge="end" aria-label="delete" onClick={deleteHandler}>
+          <IconButton edge="end" onClick={deleteHandler}>
             <DeleteOutlineIcon />
           </IconButton>
         }
@@ -269,17 +384,16 @@ export default function App() {
   //console.log(transformationsData)
 
   return (
-      <div className="App">
+      <Box className="App">
 
           <Header />
 
-          <div className="App-body main-container">
+          <Box className="App-body main-container">
 
             <Editor handleTextChange={setText} />
 
-
             {/* <TransformationList /> */}
-            <div className="grid" id="grid">
+            <Box className="grid" id="grid">
               <Grid container spacing={2}>
                   <Grid item xs={12} md={12}>
                       <List>
@@ -289,13 +403,14 @@ export default function App() {
                       </List>
                   </Grid>
                 </Grid>
-            </div>  
+            </Box>  
 
-          </div>
+          </Box>
 
+          <FABAddTransformation addHandler={addHandler} data={data} />
 
           <BottomNav text={text} transformationsData={transformationsData} addHandler={addHandler} data={data} />
 
-      </div>
+      </Box>
   );
 }
