@@ -1,21 +1,13 @@
 import React, {Component, useState, useEffect, useRef, useCallback} from "react";
 import { TextField } from "@mui/material";
-import Button from '@material-ui/core/Button';
 import { IconButton } from "@mui/material";
-import { PlayArrowOutlined, PlayArrowRounded } from "@material-ui/icons";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import StopIcon from '@mui/icons-material/Stop';
 import AddIcon from '@mui/icons-material/Add';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import Avatar from '@mui/material/Avatar';
-import FolderIcon from '@mui/icons-material/Folder';
-import DeleteIcon from '@mui/icons-material/Delete';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import RemoveIcon from '@mui/icons-material/Remove';
-import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
 import Grid from '@mui/material/Grid';
 import { Paper } from "@mui/material";
 import './App.css';
@@ -25,14 +17,9 @@ import { nanoid } from 'nanoid';
 import LoadingBar from 'react-top-loading-bar';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import Box from '@mui/material/Box';
-import { Fab } from "@mui/material";
 import { SpeedDial } from "@mui/material";
 import { SpeedDialAction } from "@mui/material";
 import { SpeedDialIcon } from "@mui/material";
-import FileCopyIcon from '@mui/icons-material/FileCopyOutlined';
-import SaveIcon from '@mui/icons-material/Save';
-import PrintIcon from '@mui/icons-material/Print';
-import ShareIcon from '@mui/icons-material/Share';
 import AbcIcon from '@mui/icons-material/Abc';
 import DownloadIcon from '@mui/icons-material/Download';
 import AppBar from '@mui/material/AppBar';
@@ -178,14 +165,14 @@ const ButtonPlay = ({text, transformationsData}) => {
         }
         disabled={loading}
       >
-        <PlayArrowRounded />
+        <PlayArrowIcon />
       </IconButton>
     </Box>
   )
 }
 
 const ProcessText = (text, transformationsData, loadingBarRef, handleSetLoading) => {
-  console.log("Processing text: " + text)
+  //console.log("Processing text: " + text)
 
   // Loading bar start 
   loadingBarRef.current.continuousStart()
@@ -197,7 +184,7 @@ const ProcessText = (text, transformationsData, loadingBarRef, handleSetLoading)
       mydata3.instructions
   ]
 
-  console.log(JSON.stringify(transformationsData))
+  //console.log(JSON.stringify(transformationsData))
 
   //axios.post(websiteURL + 'api/v1/audio-profile/processtext', 
   axios.post(websiteURL + 'api/v1/audio-profile/testjsonPOST', {
@@ -225,6 +212,7 @@ const ProcessText = (text, transformationsData, loadingBarRef, handleSetLoading)
 
 // Receives audio and plays it
 const PlayAudio = (audio) => {
+
   const audioPromise = audio.play()
 
   if (audioPromise !== undefined) {
@@ -237,6 +225,71 @@ const PlayAudio = (audio) => {
         console.info(err)
       })
   }
+}
+
+const ButtonMusic = ({text, transformationsData}) => {
+  const loadingBarRef = useRef(null);
+  const [loading, setLoading] = React.useState(false);
+  const handleSetLoading = () => {
+    setLoading(false)
+  }
+
+  const [playing, setPlaying] = useState(false);
+
+  const audioRef = useRef(null)
+
+  const play = () => {
+    loadingBarRef.current.continuousStart()
+
+    axios.post(websiteURL + 'api/v1/audio-profile/testjsonPOST', {
+      textID: uuidv4(), 
+      textData: text,
+      instructions: transformationsData
+    })
+  
+    .then( res => { 
+      console.log("playing audio file: " + s3URL + res.data.audioLink)
+  
+      // Finish loading bar
+      loadingBarRef.current.complete()
+  
+      //const audio = new Audio(s3URL + res.data.audioLink)
+      //audio.load()
+      //PlayAudio(audio)
+      audioRef.current = new Audio(s3URL + res.data.audioLink)
+
+      setPlaying(true);
+      audioRef.current.play();
+  
+      // Enable play button again
+      handleSetLoading()
+    });
+  };
+
+  const pause = () => {
+    setPlaying(false);
+    audioRef.current.pause();
+  };
+
+  const ended = () => {
+    setPlaying(false);
+  }
+
+  return (
+    <Box>
+      <LoadingBar color="#f11946" ref={loadingBarRef} shadow={true} height={3} />
+
+      <IconButton 
+        size="small"
+        color="secondary" 
+        className='button' 
+        onClick={playing ? pause : play}
+        disabled={loading}
+      >
+        {playing ? <StopIcon /> : <PlayArrowIcon />} 
+      </IconButton>
+    </Box>
+  )
 }
 
 const ButtonAddTransformation = ({addHandler, data}) => {
@@ -280,7 +333,7 @@ const FABAddTransformation = ({addHandler, data}) => {
           onClick = {() => addHandler(data)}
         />
       ),
-      name: 'Lexicographer files' },
+      name: 'LGC' },
     { icon: (
         <AbcIcon 
           style={{ fill: '#208AAE' }}
@@ -293,26 +346,11 @@ const FABAddTransformation = ({addHandler, data}) => {
   return (
     <Box>
 
-{/*       <Fab
-        sx={{
-          position: "fixed",
-          bottom: (theme) => theme.spacing(10),
-          right: (theme) => theme.spacing(2)
-        }}
-        color="primary"
-        onClick={ () => {
-          addHandler(data)
-          }
-        }
-      >
-        <AddIcon />
-      </Fab> */}
-
       <SpeedDial
         ariaLabel="Add transformation"
         sx={{ 
           position: "fixed",
-          bottom: (theme) => theme.spacing(10),
+          bottom: (theme) => theme.spacing(12),
           right: (theme) => theme.spacing(2)
         }}
         icon={<SpeedDialIcon />}
