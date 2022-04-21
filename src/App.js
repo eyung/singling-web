@@ -26,6 +26,7 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import MenuIcon from '@mui/icons-material/Menu';
+import Dictaphone from "./Dictaphone";
 
 // Config
 //const websiteURL = "http://localhost:3000/"
@@ -128,17 +129,20 @@ const BottomNav = ({text, transformationsData, addHandler, data}) => {
 
 // The Editor component receives the value and the change function as props
 const Editor = React.memo(({value, handleTextChange}) => {
+
   return (
-        <TextField
-            id="textfield"
-            variant="standard"
-            InputProps = {{disableUnderline: true}}
-            multiline
-            rows={10} 
-            autoFocus 
-            value={value}
-            onChange={e => handleTextChange(e.target.value)}
-        />
+    <div class="editor">
+      <TextField
+          id="textfield"
+          variant="standard"
+          InputProps = {{disableUnderline: true}}
+          multiline
+          rows={10} 
+          autoFocus 
+          value={value}
+          onChange={e => handleTextChange(e.target.value)}
+      />
+    </div>
   );
 });
 
@@ -241,23 +245,21 @@ const ButtonMusic = ({text, transformationsData}) => {
   const play = () => {
     loadingBarRef.current.continuousStart()
 
-    axios.post(websiteURL + 'api/v1/audio-profile/testjsonPOST', {
+    axios.post(websiteURL + 'api/v1/audio-profile/getmidisequence', {
       textID: uuidv4(), 
       textData: text,
       instructions: transformationsData
     })
   
     .then( res => { 
-      console.log("playing audio file: " + s3URL + res.data.audioLink)
+      //console.log("playing audio file: " + s3URL + res.data.audioLink)
+      console.log("midi sequence: " + res.data)
   
       // Finish loading bar
       loadingBarRef.current.complete()
   
-      //const audio = new Audio(s3URL + res.data.audioLink)
-      //audio.load()
       //PlayAudio(audio)
-      audioRef.current = new Audio(s3URL + res.data.audioLink)
-
+      audioRef.current = new Audio(res.data)
       setPlaying(true);
       audioRef.current.play();
   
@@ -428,7 +430,7 @@ export default function App() {
 
           <Box className="App-body main-container">
 
-            <Editor handleTextChange={setText} />
+            <Dictaphone handleTextChange={setText} />
 
             {/* <TransformationList /> */}
             <Box className="grid" id="grid">
@@ -442,7 +444,7 @@ export default function App() {
                   </Grid>
                 </Grid>
             </Box>  
-
+            
           </Box>
 
           <FABAddTransformation addHandler={addHandler} data={data} />
