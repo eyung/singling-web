@@ -83,7 +83,7 @@ const Header = () => {
         <Toolbar>
           
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Build
+            Singling
           </Typography>
 
           <IconButton
@@ -131,7 +131,7 @@ const BottomNav = ({text, transformationsData, addHandler, data}) => {
 const Editor = React.memo(({value, handleTextChange}) => {
 
   return (
-    <div class="editor">
+    <Box class="editor">
       <TextField
           id="textfield"
           variant="standard"
@@ -142,7 +142,7 @@ const Editor = React.memo(({value, handleTextChange}) => {
           value={value}
           onChange={e => handleTextChange(e.target.value)}
       />
-    </div>
+    </Box>
   );
 });
 
@@ -296,7 +296,7 @@ const ButtonMusic = ({text, transformationsData}) => {
 
 const ButtonAddTransformation = ({addHandler, data}) => {
   return (
-    <div>
+    <Box>
       <IconButton 
         size="large"
         color="secondary"
@@ -308,7 +308,7 @@ const ButtonAddTransformation = ({addHandler, data}) => {
       >
         <AddIcon />
       </IconButton>
-    </div>
+    </Box>
   )
 }
 
