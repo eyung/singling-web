@@ -73,7 +73,7 @@ html, body, #app, #app>div {
   position: relative;
 }
 
-.editor {
+#editor {
   display: grid;
 }
 
@@ -83,7 +83,6 @@ html, body, #app, #app>div {
   line-height: 140%;
   caret-color: #3f51b5;
   background: #e8e8e854;
-  margin-bottom: 2rem;
 }
 
 #btnStack {
@@ -123,9 +122,13 @@ html, body, #app, #app>div {
 }
 
 .green {
-  color: rgb(84, 230, 139);
+  background-color: rgb(139, 243, 179);
 }
 
 .red {
-  color: rgb(218, 50, 50);
+  background-color: rgb(218, 50, 50);
+}
+
+.microphone {
+  
 }

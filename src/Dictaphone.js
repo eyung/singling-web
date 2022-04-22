@@ -45,7 +45,7 @@ const Dictaphone = React.memo(({value, handleTextChange}) => {
   return (
 
     <Box>
-      <Box class="editor">
+      <Box id="editor">
         <TextField
             id="textfield"
             variant="standard"
@@ -57,10 +57,13 @@ const Dictaphone = React.memo(({value, handleTextChange}) => {
             onChange={e => onInputChange(e.target.value)}
         />
       </Box>
-      <p>Microphone: {listening ? <span class="circle-green" /> : <span class="circle-red" />}</p>
-      <IconButton className={listening ? 'green' : 'red'} aria-label="talk" onMouseDown={startListening} onMouseUp={SpeechRecognition.stopListening}>
-        <MicIcon />
-      </IconButton>
+      
+      <Box id="microphone" className={listening ? 'green' : 'neutral'}>
+        Hold to talk
+        <IconButton aria-label="talk" color="primary" onMouseDown={startListening} onMouseUp={SpeechRecognition.stopListening}>
+          <MicIcon />
+        </IconButton>
+      </Box>
     </Box>
   );
 });
