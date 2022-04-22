@@ -5,6 +5,7 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 import { IconButton } from "@mui/material";
 import MicIcon from '@mui/icons-material/Mic';
 import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
 
 const appId = 'd6c66b0d-1379-4020-ba4d-4b2359d2ea1c';
 const SpeechlySpeechRecognition = createSpeechlySpeechRecognition(appId);
@@ -45,7 +46,7 @@ const Editor = React.memo(({value, handleTextChange}) => {
   return (
 
     // The Editor component receives the value and the change function as props
-    <Box>
+    <Card>
       <Box id="editor">
         <TextField
             id="textfield"
@@ -59,7 +60,7 @@ const Editor = React.memo(({value, handleTextChange}) => {
         />
       </Box>
       
-      <Box id="microphone" className={listening ? 'green' : 'neutral'}>
+      <Box id="microphone" className={listening ? 'green' : 'white'}>
         Hold to talk
         <IconButton 
           aria-label="talk" 
@@ -71,7 +72,7 @@ const Editor = React.memo(({value, handleTextChange}) => {
           <MicIcon />
         </IconButton>
       </Box>
-    </Box>
+    </Card>
   );
 });
 

@@ -1,4 +1,4 @@
-import React, {useCallback} from "react";
+import React, {useEffect, useCallback} from "react";
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -11,8 +11,8 @@ import Select from '@mui/material/Select';
 
 const TransformationCard = ({transformationsData, onTransformationAdd, data, deleteHandler}) => {
 
-  const [instrument, setInstrument] = React.useState('');
-  const [octave, setOctave] = React.useState('');
+  const [instrument, setInstrument] = React.useState('piano');
+  const [octave, setOctave] = React.useState(2);
 
   const handleChangeInstrument = (event) => {
     setInstrument(event.target.value);
