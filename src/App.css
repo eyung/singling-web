@@ -129,6 +129,10 @@ html, body, #app, #app>div {
   background-color: rgb(218, 50, 50);
 }
 
+.neutral {
+  background-color: #e8e8e854;
+}
+
 .microphone {
   
 }

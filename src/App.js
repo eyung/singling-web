@@ -4,11 +4,10 @@ import List from '@mui/material/List';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import { nanoid } from 'nanoid';
-import Dictaphone from "./Dictaphone";
+import Editor from "./Editor";
 import Header from "./Header";
 import BottomNav from "./BottomNav";
 import FABAddTransformation from "./FABAddTransformation";
-import TransformationItem from "./TransformationItem";
 import TransformationCard from "./TransformationCard";
 
 var mydata = 
@@ -89,7 +88,7 @@ export default function App() {
 
           <Box className="App-body main-container">
 
-            <Dictaphone handleTextChange={setText} />
+            <Editor handleTextChange={setText} />
 
             <Box className="grid" id="grid">
               <Grid container spacing={2}>
