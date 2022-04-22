@@ -26,6 +26,10 @@ const TransformationCard = ({transformationsData, onTransformationAdd, data, del
     onTransformationAdd(e.target.value)
   }, [onTransformationAdd])
 
+  useEffect(() => {
+    //onTransformationAdd((transformationsData => [...transformationsData, data]))
+  }); 
+
   return (
     <Card sx={{ display: 'flex', mb: '3px', boxShadow: 1, bgcolor: 'white', color: 'primary.main' }}>
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>

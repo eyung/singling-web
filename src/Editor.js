@@ -10,7 +10,7 @@ const appId = 'd6c66b0d-1379-4020-ba4d-4b2359d2ea1c';
 const SpeechlySpeechRecognition = createSpeechlySpeechRecognition(appId);
 SpeechRecognition.applyPolyfill(SpeechlySpeechRecognition);
 
-const Dictaphone = React.memo(({value, handleTextChange}) => {
+const Editor = React.memo(({value, handleTextChange}) => {
   const {
     transcript,
     listening,
@@ -75,4 +75,4 @@ const Dictaphone = React.memo(({value, handleTextChange}) => {
   );
 });
 
-export default Dictaphone;
+export default Editor;
