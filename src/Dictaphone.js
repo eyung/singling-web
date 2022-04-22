@@ -44,6 +44,7 @@ const Dictaphone = React.memo(({value, handleTextChange}) => {
 
   return (
 
+    // The Editor component receives the value and the change function as props
     <Box>
       <Box id="editor">
         <TextField
