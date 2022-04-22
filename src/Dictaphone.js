@@ -61,7 +61,13 @@ const Dictaphone = React.memo(({value, handleTextChange}) => {
       
       <Box id="microphone" className={listening ? 'green' : 'neutral'}>
         Hold to talk
-        <IconButton aria-label="talk" color="primary" onMouseDown={startListening} onMouseUp={SpeechRecognition.stopListening}>
+        <IconButton 
+          aria-label="talk" 
+          color="primary" 
+          onTouchStart={startListening}
+          onMouseDown={startListening}
+          onTouchEnd={SpeechRecognition.stopListening}
+          onMouseUp={SpeechRecognition.stopListening}>
           <MicIcon />
         </IconButton>
       </Box>
