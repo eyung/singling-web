@@ -19,11 +19,11 @@ const ProcessText = (text, transformationsData, loadingBarRef, handleSetLoading)
   loadingBarRef.current.continuousStart()
 
   //test
-  const mergedata = [
+  //const mergedata = [
       //mydata.instructions,
       //mydata2.instructions,
       //mydata3.instructions
-  ]
+  //]
 
   //console.log(JSON.stringify(transformationsData))
 

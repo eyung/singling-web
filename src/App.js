@@ -1,11 +1,6 @@
-import React, {Component, useState, useEffect, useRef, useCallback} from "react";
+import React, {useCallback} from "react";
 import './App.css';
-import { IconButton } from "@mui/material";
-import AddIcon from '@mui/icons-material/Add';
 import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import { nanoid } from 'nanoid';
@@ -13,6 +8,8 @@ import Dictaphone from "./Dictaphone";
 import Header from "./Header";
 import BottomNav from "./BottomNav";
 import FABAddTransformation from "./FABAddTransformation";
+import TransformationItem from "./TransformationItem";
+import TransformationCard from "./TransformationCard";
 
 var mydata = 
 {
@@ -55,31 +52,6 @@ var mydata3 =
 
 var transformationArray = [];
 
-const TransformationItem = ({transformationsData, onTransformationAdd, data, deleteHandler}) => {
- 
-  const handleTransformationAdd = useCallback(e => {
-    onTransformationAdd(e.target.value)
-  }, [onTransformationAdd])
-
-  return (
-    
-      <ListItem className="TransformationListItem"
-        secondaryAction={
-          <IconButton edge="end" onClick={deleteHandler}>
-            <DeleteOutlineIcon />
-          </IconButton>
-        }
-      >
-        <ListItemText
-          //primary= {JSON.stringify(transformationsData)}
-          primary = {`CHANGE ${data.soundMod} TO ${data.soundModValue} WHEN ${data.mod} IS ${data.modOperator} ${data.modValue}`}
-        />
-      </ListItem>
-    
-    
-  )
-}
-
 export default function App() {
   
   const [text, setText] = React.useState("")
@@ -89,11 +61,12 @@ export default function App() {
   // TODO: Transformation to add
   let data = mydata2
 
-  // Add transformation
+  // Add transformation to UI
   const addHandler = (data) => {
     const newId = nanoid()
     setIds(ids => [...ids, newId])
 
+    // Should be implemented in TransformationItem component
     setTransformationsData(transformationsData => [...transformationsData, data])
   }
 
@@ -101,6 +74,7 @@ export default function App() {
   const deleteHandler = (removeId) => {
     setIds(ids => ids.filter(id => id !== removeId))
 
+    // Should be implemented in TransformationItem component
     const reducedArr = [...transformationsData]
     reducedArr.splice(removeId, 1)
     setTransformationsData(reducedArr)
@@ -117,13 +91,12 @@ export default function App() {
 
             <Dictaphone handleTextChange={setText} />
 
-            {/* <TransformationList /> */}
             <Box className="grid" id="grid">
               <Grid container spacing={2}>
                   <Grid item xs={12} md={12}>
                       <List>
 
-                        { ids.map(id => <TransformationItem transformationsData={transformationsData} onTransformationAdd={setTransformationsData} data={data} key={id} deleteHandler={() => deleteHandler(id)} />) } 
+                        { ids.map(id => <TransformationCard transformationsData={transformationsData} onTransformationAdd={setTransformationsData} data={data} key={id} deleteHandler={() => deleteHandler(id)} />) } 
                           
                       </List>
                   </Grid>
