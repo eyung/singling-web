@@ -20,9 +20,9 @@ const ProcessText = (text, transformationsData, loadingBarRef, handleSetLoading)
 
   //test
   const mergedata = [
-      mydata.instructions,
-      mydata2.instructions,
-      mydata3.instructions
+      //mydata.instructions,
+      //mydata2.instructions,
+      //mydata3.instructions
   ]
 
   //console.log(JSON.stringify(transformationsData))
