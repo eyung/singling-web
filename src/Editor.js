@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import { TextField } from "@mui/material";
 import { createSpeechlySpeechRecognition } from '@speechly/speech-recognition-polyfill';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import { IconButton } from "@mui/material";
+import { Button } from '@mui/material';
 import MicIcon from '@mui/icons-material/Mic';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -61,17 +61,24 @@ const Editor = React.memo(({value, handleTextChange}) => {
       </Box>
       
       <Box id="microphone" className={listening ? 'green' : 'white'}>
-        Hold to talk
-        <IconButton 
-          aria-label="talk" 
-          color="primary" 
+        <Button 
           onTouchStart={startListening}
           onMouseDown={startListening}
           onTouchEnd={SpeechRecognition.stopListening}
-          onMouseUp={SpeechRecognition.stopListening}>
-          <MicIcon />
-        </IconButton>
+          onMouseUp={SpeechRecognition.stopListening}
+          disableRipple
+          sx={{
+            ml: 1,
+            "&.MuiButtonBase-root:hover": {
+              bgcolor: "transparent"
+            }
+          }}
+          endIcon={<MicIcon />}>
+          Hold to talk
+        </Button>
+        
       </Box>
+
     </Card>
   );
 });
