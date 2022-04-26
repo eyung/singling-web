@@ -9,32 +9,68 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-const TransformationCard = ({transformationsData, onTransformationAdd, data, deleteHandler}) => {
+const TransformationCard = ({transformationsData, data, listId, deleteHandler}) => {
+
+  const [instruction, setInstruction] = React.useState({
+    mod: 'WORDLENGTH',
+    modValue: '5',
+    soundMod: 'INSTRUMENT',
+    soundModValue: 'GUNSHOT',
+    modOperator: 'EQUALTO',
+    changeMode: 'SET',
+    sentimentType: 'POSITIVESENTIMENT'
+  });
 
   const [instrument, setInstrument] = React.useState('piano');
   const [octave, setOctave] = React.useState(2);
 
   const handleChangeInstrument = (event) => {
     setInstrument(event.target.value);
+
+    //data.soundMod = 'instrument';
+    //data.soundModValue = event.target.value;
+
+    //instruction.soundMod = 'instrument';
+    //instruction.soundModValue = event.target.value;
+
+    setInstruction({soundMod:'instrument', soundModValue:event.target.value});
   };
 
   const handleChangeOctave = (event) => {
     setOctave(event.target.value);
   };
  
-  const handleTransformationAdd = useCallback(e => {
-    onTransformationAdd(e.target.value)
-  }, [onTransformationAdd])
+  // On component mount, add data to transformationsData array and delete the previous one (?)
+  useEffect(() => {
+    
+    console.log("mount:" + listId)
+    //console.log('CHANGE ' + data.soundMod + ' TO ' + data.soundModValue + ' WHEN ' + data.mod + ' IS ' + data.modOperator + ' ' + data.modValue);
+    //onTransformationAdd((transformationsData => [...transformationsData, data]))
+    
+    return () => {
+      // cleaning up here
+    }
+  }, [listId]);
 
   useEffect(() => {
-    //onTransformationAdd((transformationsData => [...transformationsData, data]))
-  }); 
+    
+    console.log(instruction)
+    
+    
+    return () => {
+      // cleaning up here
+    }
+  }, [instruction]);
+
+  //const handleTransformationAdd = useCallback(e => {
+  //  onTransformationAdd(e.target.value)
+  //}, [onTransformationAdd])
 
   return (
-    <Card sx={{ display: 'flex', mb: '3px', boxShadow: 1, bgcolor: 'white', color: 'primary.main' }}>
+    <Card sx={{ display: 'flex', mb: '3px', boxShadow: 1 }}>
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
         <CardContent>
-          {`CHANGE ${data.soundMod} TO ${data.soundModValue} WHEN ${data.mod} IS ${data.modOperator} ${data.modValue}`}
+        {/* {`CHANGE ${data.soundMod} TO ${data.soundModValue} WHEN ${data.mod} IS ${data.modOperator} ${data.modValue}`} */}
           <IconButton edge="end" onClick={deleteHandler}>
             <DeleteOutlineIcon />
           </IconButton>

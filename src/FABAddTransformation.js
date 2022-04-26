@@ -8,34 +8,43 @@ import AbcIcon from '@mui/icons-material/Abc';
 const FABAddTransformation = ({addHandler, data}) => {
 
     const actions = [
-      { icon: (
+      { 
+        icon: (
           <AbcIcon 
             style={{ fill: '#208AAE' }}
-            onClick = {() => addHandler(data)}
+            //onClick = {() => addHandler(data)}
+            onClick = {() => addHandler()}
           />
         ),
-        name: 'Part of speech' },
-      { icon: (
+        name: 'Part of speech' 
+      },
+      { 
+        icon: (
           <AbcIcon 
             style={{ fill: '#208AAE ' }}
-            onClick = {() => addHandler(data)}
+            onClick = {() => addHandler()}
           />
         ),
-        name: 'Word length' },
-      { icon: (
+        name: 'Word length' 
+      },
+      { 
+        icon: (
           <AbcIcon 
             style={{ fill: '#208AAE' }}
-            onClick = {() => addHandler(data)}
+            onClick = {() => addHandler()}
           />
         ),
-        name: 'LGC' },
-      { icon: (
+        name: 'LGC' 
+      },
+      { 
+        icon: (
           <AbcIcon 
             style={{ fill: '#208AAE' }}
-            onClick = {() => addHandler(data)}
+            onClick = {() => addHandler()}
           />
         ),
-        name: 'Punctuation' }
+        name: 'Punctuation' 
+      }
     ];
   
     return (

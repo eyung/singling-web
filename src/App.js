@@ -61,22 +61,22 @@ export default function App() {
   let data = mydata2
 
   // Add transformation to UI
-  const addHandler = (data) => {
+  const addHandler = () => {
     const newId = nanoid()
     setIds(ids => [...ids, newId])
-
-    // Should be implemented in TransformationItem component
-    setTransformationsData(transformationsData => [...transformationsData, data])
+    
+    // Should be implemented in TransformationCard component
+    //setTransformationsData(transformationsData => [...transformationsData, data])
   }
 
   // Delete transformation 
   const deleteHandler = (removeId) => {
     setIds(ids => ids.filter(id => id !== removeId))
 
-    // Should be implemented in TransformationItem component
+    // Should be implemented in TransformationCard component
     const reducedArr = [...transformationsData]
     reducedArr.splice(removeId, 1)
-    setTransformationsData(reducedArr)
+    //setTransformationsData(reducedArr)
   }
 
   //console.log(transformationsData)
@@ -95,7 +95,15 @@ export default function App() {
                   <Grid item xs={12} md={12}>
                       <List>
 
-                        { ids.map(id => <TransformationCard transformationsData={transformationsData} onTransformationAdd={setTransformationsData} data={data} key={id} deleteHandler={() => deleteHandler(id)} />) } 
+                        { ids.map(id => 
+                          <TransformationCard 
+                            key={id}
+                            transformationsData={transformationsData} 
+                            //onTransformationAdd={setTransformationsData} 
+                            data={data} 
+                            listId={id}
+                            deleteHandler={() => deleteHandler(id)} 
+                          />) } 
                           
                       </List>
                   </Grid>
@@ -104,9 +112,10 @@ export default function App() {
             
           </Box>
 
-          <FABAddTransformation addHandler={addHandler} data={data} />
+          <FABAddTransformation addHandler={addHandler} />
+          {/* <FABAddTransformation addHandler={addHandler} data={data} /> */}
 
-          <BottomNav text={text} transformationsData={transformationsData} addHandler={addHandler} data={data} />
+          <BottomNav text={text} transformationsData={transformationsData} />
 
       </Box>
   );
