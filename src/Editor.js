@@ -12,8 +12,9 @@ const SpeechlySpeechRecognition = createSpeechlySpeechRecognition(appId);
 SpeechRecognition.applyPolyfill(SpeechlySpeechRecognition);
 
 const Editor = React.memo(({value, handleTextChange}) => {
+
   const {
-    transcript,
+    finalTranscript,
     listening,
     resetTranscript,
     browserSupportsSpeechRecognition
@@ -26,18 +27,19 @@ const Editor = React.memo(({value, handleTextChange}) => {
     SpeechRecognition.startListening({ continuous: true });
   }
 
+  // Trigger on text input
   const onInputChange = (data) => {
     //console.log(data);
 
     setText(data);
-
     handleTextChange(data);
   }
 
+  // Ignore interim transcript results when appending speech text to the editor
   useEffect(() => {
-    //console.log(transcript)
-    onInputChange(text + transcript);
-  }, [transcript]); // eslint-disable-line react-hooks/exhaustive-deps
+    //console.log(finalTranscript)
+    onInputChange(text + finalTranscript);
+  }, [finalTranscript]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser doesn't support speech recognition.</span>;
