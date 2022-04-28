@@ -7,7 +7,7 @@ import { IconButton } from "@mui/material";
 import DownloadIcon from '@mui/icons-material/Download';
 import ButtonPlay from './ButtonPlay';
 
-const BottomNav = ({text, transformationsData, addHandler, data}) => {
+const BottomNav = ({text, transformationsData}) => {
     // For some reason the parent grid element creates warning
     // Warning: React does not recognize the `showLabel` prop on a DOM element
     return (

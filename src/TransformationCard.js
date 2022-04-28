@@ -9,13 +9,27 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-const TransformationCard = ({transformationsData, data, listId, deleteHandler}) => {
+const TransformationCard = ({transformationsData, data, listId, deleteHandler, deleteTransformationHandler, addTransformationHandler}) => {
 
-  const [instruction, setInstruction] = React.useState({
+  var instructionTest = {
+    id: listId,
     mod: 'WORDLENGTH',
     modValue: '5',
     soundMod: 'INSTRUMENT',
     soundModValue: 'GUNSHOT',
+    modOperator: 'EQUALTO',
+    changeMode: 'SET',
+    sentimentType: 'POSITIVESENTIMENT'
+  }
+
+  var instructionsArray = [];
+
+  const [instruction, setInstruction] = React.useState({
+    id: listId,
+    mod: 'WORDLENGTH',
+    modValue: '',
+    soundMod: '',
+    soundModValue: '',
     modOperator: 'EQUALTO',
     changeMode: 'SET',
     sentimentType: 'POSITIVESENTIMENT'
@@ -30,8 +44,8 @@ const TransformationCard = ({transformationsData, data, listId, deleteHandler}) 
     //data.soundMod = 'instrument';
     //data.soundModValue = event.target.value;
 
-    //instruction.soundMod = 'instrument';
-    //instruction.soundModValue = event.target.value;
+    instructionTest.soundMod = 'instrument';
+    instructionTest.soundModValue = event.target.value;
 
     setInstruction({soundMod:'instrument', soundModValue:event.target.value});
   };
@@ -50,7 +64,7 @@ const TransformationCard = ({transformationsData, data, listId, deleteHandler}) 
     return () => {
       // cleaning up here
     }
-  }, [listId]);
+  }, []);
 
   useEffect(() => {
     

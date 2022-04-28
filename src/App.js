@@ -74,9 +74,19 @@ export default function App() {
     setIds(ids => ids.filter(id => id !== removeId))
 
     // Should be implemented in TransformationCard component
+    //const reducedArr = [...transformationsData]
+    //reducedArr.splice(removeId, 1)
+    //setTransformationsData(reducedArr)
+  }
+
+  const addTransformationHandler = (data) => {
+    setTransformationsData(transformationsData => [...transformationsData, data])
+  }
+
+  const deleteTransformationHandler = (removeId) => {
     const reducedArr = [...transformationsData]
     reducedArr.splice(removeId, 1)
-    //setTransformationsData(reducedArr)
+    setTransformationsData(reducedArr)
   }
 
   //console.log(transformationsData)
@@ -99,10 +109,12 @@ export default function App() {
                           <TransformationCard 
                             key={id}
                             transformationsData={transformationsData} 
-                            //onTransformationAdd={setTransformationsData} 
+                            //setTransformationsData={setTransformationsData} 
                             data={data} 
                             listId={id}
                             deleteHandler={() => deleteHandler(id)} 
+                            addTransformationHandler={addTransformationHandler}
+                            deleteTransformationHandler={deleteTransformationHandler}
                           />) } 
                           
                       </List>
