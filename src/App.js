@@ -81,6 +81,8 @@ export default function App() {
 
   const addTransformationHandler = (data) => {
     setTransformationsData(transformationsData => [...transformationsData, data])
+
+    console.log(transformationArray)
   }
 
   const deleteTransformationHandler = (removeId) => {
@@ -110,8 +112,8 @@ export default function App() {
                             key={id}
                             transformationsData={transformationsData} 
                             //setTransformationsData={setTransformationsData} 
-                            data={data} 
-                            listId={id}
+                            //data={data} 
+                            cardId={id}
                             deleteHandler={() => deleteHandler(id)} 
                             addTransformationHandler={addTransformationHandler}
                             deleteTransformationHandler={deleteTransformationHandler}
