@@ -9,57 +9,102 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-const TransformationCard = ({transformationsData, data, listId, deleteHandler, deleteTransformationHandler, addTransformationHandler}) => {
+const TransformationCard = ({cardId, transformationsData, deleteHandler, deleteTransformationHandler, addTransformationHandler}) => {
 
-  var instructionTest = {
-    id: listId,
+  const [instrument, setInstrument] = React.useState({
+    cardId: cardId,
+    id: 1,
     mod: 'WORDLENGTH',
     modValue: '5',
     soundMod: 'INSTRUMENT',
-    soundModValue: 'GUNSHOT',
-    modOperator: 'EQUALTO',
-    changeMode: 'SET',
-    sentimentType: 'POSITIVESENTIMENT'
-  }
-
-  var instructionsArray = [];
-
-  const [instruction, setInstruction] = React.useState({
-    id: listId,
-    mod: 'WORDLENGTH',
-    modValue: '',
-    soundMod: '',
-    soundModValue: '',
+    soundModValue: 'PIANO',
     modOperator: 'EQUALTO',
     changeMode: 'SET',
     sentimentType: 'POSITIVESENTIMENT'
   });
 
-  const [instrument, setInstrument] = React.useState('piano');
-  const [octave, setOctave] = React.useState(2);
+  const [octave, setOctave] = React.useState({
+    cardId: cardId,
+    id: 1,
+    mod: 'WORDLENGTH',
+    modValue: '5',
+    soundMod: 'OCTAVE',
+    soundModValue: 2,
+    modOperator: 'EQUALTO',
+    changeMode: 'SET',
+    sentimentType: 'POSITIVESENTIMENT'
+  });
+
+  const [instructionsList, setInstructionsList] = React.useState([])
+
+  const [inputs, setInputs] = React.useState({});
+
+  //const [instrument, setInstrument] = React.useState('piano');
+  //const [octave, setOctave] = React.useState(2);
 
   const handleChangeInstrument = (event) => {
-    setInstrument(event.target.value);
 
-    //data.soundMod = 'instrument';
-    //data.soundModValue = event.target.value;
+    // setInstrument(event.target.value);
 
-    instructionTest.soundMod = 'instrument';
-    instructionTest.soundModValue = event.target.value;
+    // const reducedArr = [...instructionsList]
+    // reducedArr.splice(instruction.id, 1)
+    // setInstructionsList(reducedArr)
 
-    setInstruction({soundMod:'instrument', soundModValue:event.target.value});
+    // setInstruction({
+    //   id: instruction.id+1,
+    //   mod: 'WORDLENGTH',
+    //   modValue: '5',
+    //   soundMod:'instrument',
+    //   soundModValue:event.target.value,
+    //   modOperator: 'EQUALTO',
+    //   changeMode: 'SET',
+    //   sentimentType: 'POSITIVESENTIMENT'
+    // });
+
+    // setInstructionsList(instructionsList => [...instructionsList, instruction])
+    // console.log(instructionsList)
+    //deleteTransformationHandler(instruction.instructionId)
+    ///addTransformationHandler(instruction)
   };
 
   const handleChangeOctave = (event) => {
-    setOctave(event.target.value);
+    //setOctave(event.target.value);
+  };
+
+  const handleChange = e => {
+    setInputs(prevState => ({ ...prevState, [e.target.name]: e.target.value }))
+
+    if (e.target.name === 'instrument') {
+      setInstrument(instrument.soundModValue=e.target.value)
+    } else if (e.target.name === 'octave') {
+      setOctave(octave.soundModValue=e.target.value)
+    }
+    
+    //handleRemove(e.target.name)
+
+    setInstructionsList(instructionsList => [...instructionsList, instrument])
+    setInstructionsList(instructionsList => [...instructionsList, octave])
+    console.log(instructionsList)
+  };
+
+  const handleRemove = (soundMod) => {
+    //console.log(soundMod)
+    const newList = instructionsList.filter((instructionsList) => instructionsList.soundMod !== soundMod);
+ 
+    //console.log(newList)
+    setInstructionsList(newList);
   };
  
   // On component mount, add data to transformationsData array and delete the previous one (?)
   useEffect(() => {
+
+    //addTransformationHandler((transformationsData => [...transformationsData, instruction]))
     
-    console.log("mount:" + listId)
-    //console.log('CHANGE ' + data.soundMod + ' TO ' + data.soundModValue + ' WHEN ' + data.mod + ' IS ' + data.modOperator + ' ' + data.modValue);
-    //onTransformationAdd((transformationsData => [...transformationsData, data]))
+    //console.log(instruction)
+
+    setInstructionsList(instructionsList => [...instructionsList, instrument])
+    setInstructionsList(instructionsList => [...instructionsList, octave])
+    console.log(instructionsList)
     
     return () => {
       // cleaning up here
@@ -68,13 +113,12 @@ const TransformationCard = ({transformationsData, data, listId, deleteHandler, d
 
   useEffect(() => {
     
-    console.log(instruction)
-    
+    //console.log(instruction)
     
     return () => {
       // cleaning up here
     }
-  }, [instruction]);
+  }, []);
 
   //const handleTransformationAdd = useCallback(e => {
   //  onTransformationAdd(e.target.value)
@@ -96,8 +140,9 @@ const TransformationCard = ({transformationsData, data, listId, deleteHandler, d
             <Select
               labelId="select-instrument-label"
               id="select-instrument"
-              value={instrument}
-              onChange={handleChangeInstrument}
+              name="instrument"
+              value={inputs.instrument || 'piano'}
+              onChange={handleChange}
               label="Instrument"
             >
               <MenuItem value={'piano'}>Piano</MenuItem>
@@ -110,8 +155,9 @@ const TransformationCard = ({transformationsData, data, listId, deleteHandler, d
             <Select
               labelId="select-octave-label"
               id="select-octave"
-              value={octave}
-              onChange={handleChangeOctave}
+              name="octave"
+              value={inputs.octave || 2}
+              onChange={handleChange}
               label="Octave"
             >
               <MenuItem value={'1'}>1 Octave</MenuItem>
